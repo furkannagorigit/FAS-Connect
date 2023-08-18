@@ -15,28 +15,32 @@ import javax.persistence.InheritanceType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @NoArgsConstructor
 @Getter
 @Setter
 @Table(name="user")
+@ToString
 public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(name="first_name", length=255)
 	private String firstName;
 	
-	@Column(name="last_name", length=255)
 	private String lastName;
 	
 	@Column(name="dob")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate dateOfBirth;
 	
 	@Enumerated(EnumType.STRING)
@@ -50,15 +54,9 @@ public class User {
 	@Column(length=10)
 	private String mobile;
 	
-	@Column(length=255, unique = true, nullable = false)
+	@Column(unique = true, nullable = false)
 	private String email;
 	
-	@Column(length=255, nullable = false)
+	@Column(nullable = false)
 	private String password;
-	
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-	private Student student;
-	
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-	private Faculty faculty;
 }
