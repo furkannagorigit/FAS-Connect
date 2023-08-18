@@ -28,7 +28,7 @@ public class QnA {
 
     @OneToOne
     @MapsId
-    @JoinColumn(name = "post")
+    @JoinColumn(name = "id")
     private Post post;
 
     @Lob

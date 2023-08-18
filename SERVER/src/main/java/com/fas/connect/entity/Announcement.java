@@ -24,7 +24,7 @@ public class Announcement {
 
     @OneToOne
     @MapsId
-    @JoinColumn(name = "post")
+    @JoinColumn(name = "id")
     private Post post;
 
    

@@ -28,7 +28,7 @@ public class Feed {
 
     @OneToOne
     @MapsId
-    @JoinColumn(name = "post")
+    @JoinColumn(name = "id")
     private Post post;
 
 //    @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL)

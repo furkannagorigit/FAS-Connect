@@ -18,6 +18,7 @@ import javax.persistence.MappedSuperclass;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,6 +26,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Post {
     @Id
@@ -44,4 +46,7 @@ public class Post {
     @Column(name = "post_type")
     private PostType type;
 
+	
+
+    
 }
