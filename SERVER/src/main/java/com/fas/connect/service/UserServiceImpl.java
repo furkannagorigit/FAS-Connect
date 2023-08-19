@@ -55,6 +55,8 @@ public class UserServiceImpl implements UserService {
 	@PersistenceContext
 	private EntityManager entityManager;
 
+	private EmailService emailService;
+	
 	//Service to get the list of users
 	@Override
 	public List<User> getAllUsers() {
@@ -75,6 +77,13 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public FacultyDTO addFaculty(FacultyDTO facultyDTO) {
 		Faculty faculty = modelMapper.map(facultyDTO, Faculty.class);
+		String to = faculty.getUser().getEmail();
+        String subject = "Welcome to FASConnect";
+        String text = "Hello" + faculty.getUser().getFirstName() +",you have successfully registered in FASConnect.\n" +
+        "Your User Id is " + faculty.getFacultyId() + ".\n To SignIn use your ID and EmailID" + faculty.getUser().getEmail() + "Thank you";
+        
+
+        emailService.sendEmail(to, subject, text);
 		return modelMapper.map(facultyRepo.save(faculty), FacultyDTO.class);
 	}
 
@@ -120,7 +129,13 @@ public class UserServiceImpl implements UserService {
 			User user = userRepo.save(studentDTO.getUser());
 			Student student = new Student(studentDTO.getRollNo(), user);
 			course.addStudent(student);
+			String to = studentDTO.getUser().getEmail();
+	        String subject = "Welcome to FASConnect";
+	        String text = "Hello" + studentDTO.getUser().getFirstName() +",you have successfully registered in FASConnect.\n" +
+	        "Your User Id is " + studentDTO.getRollNo() + ".\n To SignUp use your ID and EmailID" + student.getUser().getEmail() + "Thank you";
+	        
 
+	        emailService.sendEmail(to, subject, text);
 		}
 		String successMessage = "Students added successfully to the course.";
 		return ResponseEntity.status(HttpStatus.CREATED).body(successMessage);	}
