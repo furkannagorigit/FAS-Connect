@@ -20,6 +20,8 @@ import javax.persistence.JoinColumn;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fas.connect.custom_exceptions.ResourceNotFoundException;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -58,12 +60,12 @@ public class Course {
 	private List<Student> students = new ArrayList<>();
 
 	
-//	@ManyToMany(cascade = CascadeType.PERSIST)
-//	@JoinTable(name="course_module",
-//	joinColumns = @JoinColumn(name="course_id"),
-//	inverseJoinColumns = @JoinColumn(name="module_id")
-//	)
-//	private Set<Module> modules=new HashSet<>();	
+	@ManyToMany(cascade = CascadeType.PERSIST)
+	@JoinTable(name="course_module",
+	joinColumns = @JoinColumn(name="course_id"),
+	inverseJoinColumns = @JoinColumn(name="module_id")
+	)
+	private Set<Module> modules=new HashSet<>();	
 	
 	public void addStudent(Student s) {
 		students.add(s);
@@ -72,6 +74,13 @@ public class Course {
 	public void removeStudent(Student s) {
 		students.remove(s);
 		s.setCourse(null);
+	}
+	
+	public Student findStudent(Student s) {
+		Student foundStudent = students.stream()
+                .filter(obj -> obj.getUserId() == s.getUserId())
+                .findFirst().orElseThrow(()-> new ResourceNotFoundException("Student does not exist"));
+		return foundStudent;
 	}
 	
 }

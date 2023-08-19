@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fas.connect.dto.FacultyDTO;
+import com.fas.connect.dto.MarksDTO;
 import com.fas.connect.dto.StudentDTO;
 import com.fas.connect.dto.UserDTO;
 import com.fas.connect.entities.User;
@@ -54,7 +55,7 @@ public class UserController {
 	@PutMapping("/editStudent/{userId}")
 	public ResponseEntity<?> editStudent(@PathVariable Long userId, @RequestBody StudentDTO studentDTO){
 		userService.editStudent(userId, studentDTO);
-		return ResponseEntity.status(HttpStatus.OK).body("Faculty edited successfully!");
+		return ResponseEntity.status(HttpStatus.OK).body("Student edited successfully!");
 	}
 
 	//DELETE mapping to delete a faculty record
@@ -78,9 +79,21 @@ public class UserController {
 		return ResponseEntity.status(HttpStatus.OK).body("Student deleted successfully!");
 	}
 	
-	//POST mapping to adda a student record to course
+	//POST mapping to add a student record to course
 	@PostMapping("/addStudents/{courseId}")
 	public ResponseEntity<?> AddUsers(@RequestBody @Valid List<StudentDTO> studentDTO,@PathVariable Long courseId) {
 		 return userService.AddStudentsToCourse(studentDTO, courseId);
+	}
+	
+	//PostMapping to add a student's marks
+	@PostMapping("/marks/addMarks")
+	public ResponseEntity<?> addMarks(@RequestBody MarksDTO marksDTO){
+		return ResponseEntity.status(HttpStatus.CREATED).body(userService.addMarks(marksDTO));
+	}
+	
+	//GET mapping to get a list of marks
+	@GetMapping("/marks/getMarks/{userId}")
+	public ResponseEntity<?> getMarks(@PathVariable Long userId){
+		return ResponseEntity.status(HttpStatus.OK).body(userService.getMarks(userId));
 	}
 }

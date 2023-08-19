@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.fas.connect.dto.FacultyDTO;
+import com.fas.connect.dto.MarksDTO;
 import com.fas.connect.dto.StudentDTO;
 import com.fas.connect.dto.UserDTO;
 import com.fas.connect.entities.User;
@@ -29,8 +30,6 @@ public interface UserService {
 	//Edit Student
 	StudentDTO editStudent(Long id, StudentDTO studentDTO);
 
-
-
 	//	//Delete Student
 	//	void deleteStudent(Long id);
 
@@ -42,4 +41,10 @@ public interface UserService {
 
 	//Add Student to Course
 	ResponseEntity<?> AddStudentsToCourse(List<StudentDTO> students,long courseId);
+	
+	//Get Student's Module wise Marks
+	List<MarksDTO> getMarks(Long id);
+	
+	//Add Student's Module wise Marks
+	MarksDTO addMarks(MarksDTO marksDTO);
 }

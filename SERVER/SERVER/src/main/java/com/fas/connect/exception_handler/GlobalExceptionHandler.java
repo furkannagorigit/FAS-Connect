@@ -49,7 +49,7 @@ public class GlobalExceptionHandler {
 		@ExceptionHandler(RuntimeException.class)
 		public ResponseEntity<?> handleRuntimeException
 		(RuntimeException e){
-			System.out.println("in catch-all  exc");
+			System.out.println("in catch-all exc");
 			return ResponseEntity.status
 					(HttpStatus.INTERNAL_SERVER_ERROR).
 					body(new ApiResponse(e.getMessage()));

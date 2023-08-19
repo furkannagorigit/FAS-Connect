@@ -20,12 +20,14 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @NoArgsConstructor
 @Getter
 @Setter
 @Table(name="student")
+@ToString
 public class Student {
 	
 	@Id
@@ -41,6 +43,9 @@ public class Student {
 	
 	@ManyToOne
 	Course course;
+	
+	@OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StudentModuleMark> studentModuleMarks = new ArrayList<>();
 	
 //	@OneToMany
 //	private List<Feed> feed = new ArrayList<>(); 
