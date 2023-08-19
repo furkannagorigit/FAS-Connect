@@ -2,6 +2,7 @@ package com.fas.connect.controller;
 
 import com.fas.connect.dto.PostDTO;
 import com.fas.connect.entity.Post;
+import com.fas.connect.entity.User;
 import com.fas.connect.service.PostServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,11 +38,6 @@ public class PostController {
         return postServiceImpl.getPostById(id);
     }
 
-    @PostMapping
-    public Post createPost(@RequestBody Post post) {
-        return postServiceImpl.savePost(post);
-    }
-
     @PutMapping("/{id}")
     public Post updatePost(@PathVariable Long id, @RequestBody Post post) {
         
@@ -50,6 +46,8 @@ public class PostController {
 
     @DeleteMapping("/{id}")
     public void deletePost(@PathVariable Long id) {
-        postServiceImpl.deletePost(id);
+    	Post post = postServiceImpl.getPostById(id);
+    	User user = post.getCreatedBy();
+    	
     }
 }

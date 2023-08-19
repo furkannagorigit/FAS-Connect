@@ -15,8 +15,5 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class AnnouncementDTO {
-
-    private Long id;
-
     private Post post;
 }

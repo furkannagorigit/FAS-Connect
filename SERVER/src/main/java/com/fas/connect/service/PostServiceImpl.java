@@ -38,6 +38,7 @@ public class PostServiceImpl implements IPostService {
     }
 
     public Post savePost(Post post) {
+    	post.getCreatedBy().addPost(post);
         return postRepository.save(post);
     }
 

@@ -22,11 +22,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @Entity
 public class Post {
     @Id
@@ -36,9 +38,9 @@ public class Post {
     @Lob
     private String text;
 
-//    @ManyToOne
-//    @JoinColumn(name = "created_by_id")
-//    private User createdBy;
+    @ManyToOne
+    @JoinColumn(name = "created_by_id")
+    private User createdBy;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime createdAt;
 

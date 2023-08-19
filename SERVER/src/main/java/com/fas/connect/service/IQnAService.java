@@ -2,13 +2,14 @@ package com.fas.connect.service;
 
 import java.util.List;
 
+import com.fas.connect.dto.QnADTO;
 import com.fas.connect.entity.QnA;
 
 public interface IQnAService {
 
-	 public List<QnA> getAllQnAs();
+	 public List<QnADTO> getAllQnAs();
 
-	    public QnA saveQnA(QnA qna) ;
+	    public QnADTO saveQnA(QnADTO qnaDTO) ;
 
 	    public void deleteQnA(Long id) ;
 }

@@ -16,9 +16,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class FeedDTO {
 
-	    private Long id;
-
-	    private Post post;
+	    private PostDTO postDTO;
 
 //	    private Set<Like> likes = new HashSet<>();
  
