@@ -40,9 +40,9 @@ public class Faculty {
 	@MapsId
 	private User user;
 	
-//	@OneToMany
-//	private List<Post> posts = new ArrayList<>();
+	@OneToMany
+	private List<QnA> posts = new ArrayList<>();
 	
-//	@ManyToMany
-//	private List<Module> modules = new ArrayList<Module>();
+	@ManyToMany
+	private List<Module> modules = new ArrayList<Module>();
 }
