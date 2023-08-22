@@ -22,13 +22,14 @@ public interface UserService {
 	FacultyDTO addFaculty(FacultyDTO facultyDTO);
 
 	//Edit faculty
-	FacultyDTO editFaculty(Long id, FacultyDTO userDTO);
+	FacultyDTO editFaculty(FacultyDTO userDTO);
+//	FacultyDTO editFaculty(String facultyID, String email);
 
 	//Delete Faculty
 	void deleteFaculty(Long id);
 
 	//Edit Student
-	StudentDTO editStudent(Long id, StudentDTO studentDTO);
+	StudentDTO editStudent(StudentDTO studentDTO);
 
 	//	//Delete Student
 	//	void deleteStudent(Long id);

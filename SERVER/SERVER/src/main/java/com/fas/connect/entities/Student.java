@@ -47,8 +47,8 @@ public class Student {
 	@OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<StudentModuleMark> studentModuleMarks = new ArrayList<>();
 	
-//	@OneToMany
-//	private List<Feed> feed = new ArrayList<>(); 
+	@OneToMany
+	private List<Feed> feed = new ArrayList<>(); 
 	
 	public Student(String rollNo, User user)
 	{

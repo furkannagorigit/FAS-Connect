@@ -40,21 +40,21 @@ public class UserController {
 
 	//POST mapping to add a faculty record
 	@PostMapping("/addFaculty")
-	public ResponseEntity<?> addFaculty(@RequestBody FacultyDTO facultyDTO){
+	public ResponseEntity<?> addFaculty(@RequestBody @Valid FacultyDTO facultyDTO){
 		return ResponseEntity.status(HttpStatus.CREATED).body(userService.addFaculty(facultyDTO));
 	}
 
 	//PUT mapping to edit faculty details
-	@PutMapping("/editFaculty/{userId}")
-	public ResponseEntity<?> editFaculty(@PathVariable Long userId, @RequestBody FacultyDTO facultyDTO){
-		userService.editFaculty(userId, facultyDTO);
+	@PutMapping("/editFaculty")
+	public ResponseEntity<?> editFaculty(@RequestBody FacultyDTO facultyDTO){
+		userService.editFaculty(facultyDTO);
 		return ResponseEntity.status(HttpStatus.OK).body("Faculty edited successfully!");
 	}
 	
 	//PUT mapping to edit student details
-	@PutMapping("/editStudent/{userId}")
-	public ResponseEntity<?> editStudent(@PathVariable Long userId, @RequestBody StudentDTO studentDTO){
-		userService.editStudent(userId, studentDTO);
+	@PutMapping("/editStudent")
+	public ResponseEntity<?> editStudent(@RequestBody StudentDTO studentDTO){
+		userService.editStudent(studentDTO);
 		return ResponseEntity.status(HttpStatus.OK).body("Student edited successfully!");
 	}
 

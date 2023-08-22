@@ -1,5 +1,7 @@
 package com.fas.connect.dto;
 
+import javax.validation.constraints.NotBlank;
+
 import com.fas.connect.entities.User;
 
 import lombok.AllArgsConstructor;
@@ -14,6 +16,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FacultyDTO {
+	@NotBlank
 	private String facultyId;
 	private User user;
 }

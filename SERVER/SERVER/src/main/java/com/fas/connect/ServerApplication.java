@@ -13,7 +13,7 @@ import com.fas.connect.entities.User;
 import com.fas.connect.service.UserService;
 import com.fas.connect.service.UserServiceImpl;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com.fas.connect", "com.fas.connect.logging"})
 public class ServerApplication {
 	
 	public static void main(String[] args) {

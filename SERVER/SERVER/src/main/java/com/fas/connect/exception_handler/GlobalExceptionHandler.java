@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -19,17 +21,18 @@ import com.fas.connect.dto.ApiResponse;
 @RestControllerAdvice // to tell SC following is centralized custom exc handler , 
 //to provide COMMON ADVICE to all rest controllers regarding exc handling
 public class GlobalExceptionHandler {
+	
+	private final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+	
 	//add exc handling method : for validation failures
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<?> handleMethodArgumentNotValidException
 	(MethodArgumentNotValidException e)
 	{
+		logger.error("An exception occurred: "+ e.getMessage());
 		System.out.println("in meth arg invalid "+e);
 		List<FieldError> errList=e.getFieldErrors();
-//		Map<String, String> errMap=new HashMap<>();
-//		for(FieldError err : errList)
-//			errMap.put(err.getField(), err.getDefaultMessage());
-		//OR
+		
 		Map<String, String> map = errList.stream() //Stream<FieldError> collection --> stream
 		.collect(
 				Collectors.toMap(FieldError::getField,FieldError::getDefaultMessage));//f -> f.getField(), f -> f.getDefaultMessage()
@@ -40,7 +43,8 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(ResourceNotFoundException.class)
 	public ResponseEntity<?> handleResourceNotFoundException
 	(ResourceNotFoundException e){
-		System.out.println("in res not found exc");
+		logger.error("An exception occurred: "+ e.getMessage());
+		System.out.println("in res not found exc" );
 		return ResponseEntity.status
 				(HttpStatus.NOT_FOUND).
 				body(new ApiResponse(e.getMessage()));
@@ -49,6 +53,7 @@ public class GlobalExceptionHandler {
 		@ExceptionHandler(RuntimeException.class)
 		public ResponseEntity<?> handleRuntimeException
 		(RuntimeException e){
+			logger.error("An exception occurred: "+ e.getMessage());
 			System.out.println("in catch-all exc");
 			return ResponseEntity.status
 					(HttpStatus.INTERNAL_SERVER_ERROR).

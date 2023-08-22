@@ -89,35 +89,24 @@ public class UserServiceImpl implements UserService {
 
 	//Service to edit faculty details
 	@Override
-	public FacultyDTO editFaculty(Long id, FacultyDTO facultyDTO) {
-		Faculty faculty = facultyRepo.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Faculty not found"));
-		modelMapper.map(facultyDTO, faculty);				
+	public FacultyDTO editFaculty(FacultyDTO facultyDTO) {
+		Faculty faculty = facultyRepo
+				.findByFacultyIdAndUserEmail(facultyDTO.getFacultyId(), facultyDTO.getUser().getEmail())
+				.orElseThrow(()-> new ResourceNotFoundException("Faculty not found"));
+		modelMapper.map(facultyDTO, faculty);
 		return modelMapper.map(facultyRepo.save(faculty), FacultyDTO.class);
 	}
 
 	//Service to edit student details
 	@Override
-	public StudentDTO editStudent(Long id, StudentDTO studentDTO) {
-		Student student = studentRepo.findById(id)
-				.orElseThrow();
+	public StudentDTO editStudent(StudentDTO studentDTO) {		
+		Student student = studentRepo
+						.findByRollNoAndUserEmail(studentDTO.getRollNo(), studentDTO.getUser().getEmail())
+						.orElseThrow(()-> new ResourceNotFoundException("Student not found"));
 		modelMapper.map(studentDTO, student);
-
-		System.out.println(student.getCourse().findStudent(student).getUser().getFirstName());
-
 		return modelMapper.map(studentRepo.save(student), StudentDTO.class);
 	}
 
-	//	//Service to edit student details
-	//	@Override
-	//	public StudentDTO editStudent(Long id, StudentDTO studentDTO) {
-	//		Student student = studentRepo.findById(id)
-	//				.orElseThrow();
-	//		Course course = student.getCourse();
-	//		
-	//		Student foundStudent = course.findStudent(student);
-	//		
-	//	}
 
 	//Service to delete a faculty record
 	@Override
@@ -126,14 +115,6 @@ public class UserServiceImpl implements UserService {
 				.orElseThrow(() -> new ResourceNotFoundException("Faculty not found"));
 		facultyRepo.delete(faculty);
 	}
-
-	//	//Service to delete a student record
-	//	@Override
-	//	public void deleteStudent(Long id) {
-	//		Student student = studentRepo.findById(id)
-	//				.orElseThrow(() -> new RuntimeException("Student not found"));
-	//		studentRepo.delete(student);
-	//	}
 
 	@Override
 	public ResponseEntity<?> AddStudentsToCourse(List<StudentDTO> students, long courseId) {

@@ -44,31 +44,23 @@ public class FeedServiceImpl implements FeedService {
 	@Override
 	public FeedDTO editFeed(Long postId, FeedDTO feedDTO) {
 		Feed feed = feedRepo.findById(postId)
-				.orElseThrow(()-> new RuntimeException());
+				.orElseThrow(()-> new ResourceNotFoundException("Post not found"));
 
 		User user = feed.getCreatedBy();
-		
-		System.out.println("user found");
 		
 		//Find post from list of posts in user
 		Post postInUser = user.getPosts().stream()
 				.filter(myPost-> myPost.equals(feed))
 				.findFirst().orElseThrow();
 		
-		System.out.println("post found");
 		
 		//remove post from list
 		user.deletePost(postInUser);
 		
-		//
 		modelMapper.map(feedDTO, feed);
 		feed.setId(postId);
 
-		System.out.println("feed id set");
-
 		user.addPost((Post)feed);
-
-		System.out.println("feed added to user");
 
 		return modelMapper.map(feed, FeedDTO.class);
 	}
