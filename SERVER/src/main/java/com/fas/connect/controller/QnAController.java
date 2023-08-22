@@ -1,12 +1,12 @@
 package com.fas.connect.controller;
 
-
-import com.fas.connect.dto.FeedDTO;
+import com.fas.connect.dto.CommentDTO;
+import com.fas.connect.dto.PostRequestDTO;
 import com.fas.connect.dto.QnADTO;
-import com.fas.connect.entity.Post;
-import com.fas.connect.entity.QnA;
-import com.fas.connect.service.PostServiceImpl;
-import com.fas.connect.service.QnAServiceImpl;
+import com.fas.connect.entities.Post;
+import com.fas.connect.entities.QnA;
+import com.fas.connect.service.PostService;
+import com.fas.connect.service.QnAService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,33 +17,39 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/qnas")
 public class QnAController {
-
-    private final QnAServiceImpl QnAServiceImpl;
-    private PostServiceImpl postServiceImpl;
-    
-    @Autowired
-    public QnAController(QnAServiceImpl QnAServiceImpl) {
-        this.QnAServiceImpl = QnAServiceImpl;
-    }
+	@Autowired
+    private QnAService qnaService;
 
     @GetMapping
-    public ResponseEntity<List<QnADTO>> getAllFeeds() {
-        List<QnADTO> QnADTOs = QnAServiceImpl.getAllQnAs();
+    public ResponseEntity<List<QnADTO>> getAllQnAs() {
+        List<QnADTO> QnADTOs = qnaService.getAllQnAs();
         if (QnADTOs.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
         return ResponseEntity.ok(QnADTOs);
     }
 
-    @PostMapping("/addQnA")
-    public ResponseEntity<?> createQnA(@RequestBody QnADTO qnaDTO) {
-    	Post post = qnaDTO.getPost();
-    	postServiceImpl.savePost(post);
-    	return ResponseEntity.status(HttpStatus.CREATED).body(QnAServiceImpl.saveQnA(qnaDTO));
+    @PostMapping("/addQnA/{userId}")
+    public ResponseEntity<?> addQnA(@RequestBody PostRequestDTO qnaDTO,@PathVariable Long userId) {
+    	System.out.println(qnaDTO.toString());
+    	return ResponseEntity.status(HttpStatus.CREATED).body(qnaService.addQnA(userId,qnaDTO));
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteQnA(@PathVariable Long id) {
-        QnAServiceImpl.deleteQnA(id);
+    @PutMapping("/editQnA/{postId}")
+    public ResponseEntity<?> editQnA(@RequestBody  QnADTO qnaDTO,@PathVariable Long postId) {
+    	System.out.println(qnaDTO.toString());
+    	return ResponseEntity.status(HttpStatus.CREATED).body(qnaService.editQnA(postId,qnaDTO));
+
     }
+    
+    @PostMapping("/commentQnA/comment")
+    public ResponseEntity<?> commentFeed(@RequestBody CommentDTO commentDTO) {
+    	return ResponseEntity.status(HttpStatus.CREATED).body(qnaService.commentQnA(commentDTO));
+    }
+    
+	@PostMapping("/uncommentQnA/{id}")
+    public ResponseEntity<?> uncommentFeed(@PathVariable Long id) {
+    	return ResponseEntity.status(HttpStatus.OK).body(qnaService.uncommentQnA(id));
+    }
+    
 }

@@ -1,5 +1,7 @@
 package com.fas.connect.dto;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -7,24 +9,23 @@ import javax.persistence.Lob;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 
-import com.fas.connect.entity.Post;
+import com.fas.connect.entities.Post;
+import com.fas.connect.entities.PostType;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 public class QnADTO {
-
-    private Long id;
-
-	private Post post;
-
+	
+	private String text;
+	private LocalDateTime createdAt = LocalDateTime.now();
+	private final PostType type = PostType.QNA;
     private String answer;
 
-//	    private List<Comment> comments = new ArrayList<>();
-
-//	    private Faculty answerBy;
 }

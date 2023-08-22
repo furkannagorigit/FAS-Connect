@@ -1,48 +1,49 @@
 package com.fas.connect.service;
 
 import com.fas.connect.dto.PostDTO;
-import com.fas.connect.entity.Post;
+import com.fas.connect.entities.Post;
+import com.fas.connect.entities.User;
+import com.fas.connect.exception_handler.ResourceNotFoundException;
 import com.fas.connect.repository.PostRepository;
+import com.fas.connect.repository.UserRepository;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class PostServiceImpl implements IPostService {
+public class PostServiceImpl implements PostService {
 	@Autowired
-    private final PostRepository postRepository;
-
-    @Autowired
-    public PostServiceImpl(PostRepository postRepository) {
-        this.postRepository = postRepository;
-        
-    }
-    
-    
-    @Autowired
+    private PostRepository postRepo;
+	@Autowired
+	private UserRepository userRepo;
+	@Autowired
     private ModelMapper modelMapper;
 
-    public List<PostDTO> getAllPosts() {
-        List<Post> posts = postRepository.findAll();
-        return posts.stream()
-            .map(post -> modelMapper.map(post, PostDTO.class))
-            .collect(Collectors.toList());
-    }
-    
-    public Post getPostById(Long id) {
-        return postRepository.findById(id).orElse(null);
-    }
-
-    public Post savePost(Post post) {
-    	post.getCreatedBy().addPost(post);
-        return postRepository.save(post);
+//    public List<PostDTO> getAllPosts() {
+//        List<Post> posts = postRepo.findAll();
+//        return posts.stream()
+//            .map(post -> modelMapper.map(post, PostDTO.class))
+//            .collect(Collectors.toList());
+//    }
+    @Override
+    public Page<PostDTO> getAllPosts(Pageable pageable) {
+        Page<Post> posts = postRepo.findAll(pageable);
+        return posts.map(post -> modelMapper.map(post, PostDTO.class));
     }
 
-    public void deletePost(Long id) {
-        postRepository.deleteById(id);
-    }
+    @Override
+	public void deletePost(Long postId) {
+		Post post = postRepo.findById(postId).orElseThrow(()->new ResourceNotFoundException("Post Not Found"));
+		User user = post.getCreatedBy();
+		user.deletePost(post);
+		userRepo.save(user);
+	}	
 }
