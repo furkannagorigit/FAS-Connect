@@ -41,8 +41,10 @@ public class FacultyController {
 	
 	//PUT mapping to update faculty details
 		@PutMapping
-		public ResponseEntity<FacultyDTO> updateFaculty(@RequestBody FacultyDTO facultyDTO) {
-		        return ResponseEntity.ok(facultyService.updateFaculty(facultyDTO));
+		public ResponseEntity<?> updateFaculty(@RequestBody FacultyDTO facultyDTO) {
+		        facultyService.updateFaculty(facultyDTO);
+				return ResponseEntity.status(HttpStatus.OK).body("Faculty updated successfully!");
+
 		}
 	
 		//Post mapping to upload profile image

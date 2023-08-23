@@ -37,9 +37,9 @@ public class StudentController {
 	}
 
 	//PUT mapping to edit student details
-	@PutMapping("/editStudent/{userId}")
-	public ResponseEntity<?> editStudent(@PathVariable Long userId, @RequestBody @Valid StudentDTO studentDTO){
-		studentService.updateStudent(userId, studentDTO);
+	@PutMapping("/editStudent")
+	public ResponseEntity<?> editStudent(@RequestBody @Valid StudentDTO studentDTO){
+		studentService.editStudent(studentDTO);
 		return ResponseEntity.status(HttpStatus.OK).body("Student updated successfully!");
 	}
 	

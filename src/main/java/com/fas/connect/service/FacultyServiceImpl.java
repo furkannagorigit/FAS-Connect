@@ -43,6 +43,7 @@ public class FacultyServiceImpl implements FacultyService{
 				.findByFacultyIdAndUserEmail(facultyDTO.getFacultyId(), facultyDTO.getUser().getEmail())
 				.orElseThrow(()-> new ResourceNotFoundException("Faculty not found"));
 		mapper.map(facultyDTO, faculty);
+		faculty.getUser().setId(faculty.getUserId());
 		return mapper.map(facultyRepo.save(faculty), FacultyDTO.class);
 	}
 
