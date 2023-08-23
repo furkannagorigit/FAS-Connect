@@ -1,6 +1,5 @@
 package com.fas.connect.entities;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -19,9 +18,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import org.springframework.format.annotation.DateTimeFormat;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,7 +30,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Getter
 @Setter
-//@ToString(exclude = {"modules", "students"})
+@ToString
 
 public class Module {
 
@@ -45,7 +41,8 @@ public class Module {
 	@Enumerated(EnumType.STRING) 
 	@Column(length = 30)
 	private ModuleName moduleName;
-	
+
+	private String description;
 	
 	@ManyToMany(mappedBy = "modules")
 	private List<Course> courses = new ArrayList<>();
@@ -56,6 +53,11 @@ public class Module {
 	inverseJoinColumns = @JoinColumn(name="faculty_id")
 	)
 	private Set<Faculty> faculties = new HashSet<>();		
+	
+	
+	@OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StudentModuleMark> studentModuleMarks = new ArrayList<>();
+
 
 	
 }

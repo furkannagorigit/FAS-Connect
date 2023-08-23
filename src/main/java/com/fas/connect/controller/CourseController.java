@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fas.connect.dto.CourseDTO;
+import com.fas.connect.dto.ModuleDTO;
 import com.fas.connect.service.CourseService;
 
 
@@ -27,8 +28,8 @@ public class CourseController {
 	private CourseService courseService;
 
 	
-	// to get 
-	@GetMapping
+	// to get all courses
+	@GetMapping("/allCourse")
 	public ResponseEntity<?> getAllCourses() {
 		List<CourseDTO> list = courseService.getAllCourses();
 		if (list.isEmpty())
@@ -36,6 +37,23 @@ public class CourseController {
 		return ResponseEntity.ok(list);
 		
 	}
+	@GetMapping("/{courseId}")
+	public ResponseEntity<?> getCourse(@PathVariable Long courseId) {
+		return ResponseEntity.ok(courseService.getCourseDetails(courseId));
+		
+	}
+	// to add new course
+	@PostMapping
+	public ResponseEntity<?> addNewCourse(@RequestBody @Valid CourseDTO dto) {
+		return ResponseEntity.status(HttpStatus.CREATED).body(courseService.addNewCourse(dto));
+	}
+	
+	// to add new module
+	@PostMapping("/addModule")
+	public ResponseEntity<?> addNewModule(@RequestBody @Valid ModuleDTO dto) {
+		return ResponseEntity.status(HttpStatus.CREATED).body(courseService.addNewModule(dto));
+	}
+	
 
 
 }

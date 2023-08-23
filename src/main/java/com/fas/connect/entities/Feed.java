@@ -6,35 +6,67 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.MapsId;
+import javax.persistence.FetchType;
+import javax.persistence.Lob;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@NoArgsConstructor
 @Getter
 @Setter
-@NoArgsConstructor
-@Entity
-public class Feed {
-    @Id
-    private Long id;
+@Entity  
+@Table(name="feed")  
+@PrimaryKeyJoinColumn(name="id")  
+public class Feed extends Post {
+	
+	@Lob
+	private String feedImg;
 
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "post")
-    private Post post;
+	@JsonIgnore
+	@OneToMany(mappedBy = "feedId", cascade = CascadeType.ALL,orphanRemoval = true)
+  private List<PostLike> likes = new ArrayList<>();
 
-//    @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL)
-//    private Set<Like> likes = new HashSet<>();
-//
-//    @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL) 
-//    private List<Comment> comments = new ArrayList<>();
+	@JsonIgnore
+  @OneToMany(mappedBy = "postId", cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.EAGER) 
+  private List<Comment> comments = new ArrayList<>();
 
+	public void addLike(User u) {
+		PostLike post = new PostLike();
+		post.setFeedId(this);
+		post.setLikedBy(u);
+		likes.add(post);
+
+	}
+	public void removeLike(User u) {
+	    PostLike likeToRemove = null;
+	    for (PostLike like : likes) {
+	        if (like.getLikedBy().equals(u)) {
+	            likeToRemove = like;
+	            break;
+	        }
+	    }
+
+	    if (likeToRemove != null) {
+	        likes.remove(likeToRemove);
+	    }
+	}
+	
+	public void addComment(Comment c, User u) {
+		comments.add(c);
+		c.setPostId(this);
+		c.setUser(u);
+	}
+	public void removeComment(Comment c, User u) {
+		comments.remove(c);
+		c.setPostId(null);
+		c.setUser(null);
+	}
 }

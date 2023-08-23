@@ -9,14 +9,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.Lob;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -63,6 +61,23 @@ public class User {
 	@Column(length=255, nullable = false)
 	private String password;
 	
-	@OneToMany
-	private List<Post> posts = new ArrayList<>(); 
-}
+	@Lob
+	private String profileImg;
+	
+	@OneToMany(mappedBy = "createdBy", 
+			cascade = CascadeType.ALL, 
+			orphanRemoval = true,
+			fetch = FetchType.EAGER)
+	private List<Post> posts = new ArrayList<>();
+	
+	public void addPost(Post p) {
+		posts.add(p);
+		p.setCreatedBy(this);
+	}
+	
+	public void deletePost(Post p) {
+		posts.remove(p);
+		p.setCreatedBy(null);
+	}
+
+	}

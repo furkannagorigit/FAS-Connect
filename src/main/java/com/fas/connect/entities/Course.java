@@ -8,6 +8,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -33,7 +34,6 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-//@ToString(exclude = {"modules", "students"})
 
 public class Course {
 
@@ -58,7 +58,7 @@ public class Course {
 	private List<Student> students = new ArrayList<>();
 
 	
-	@ManyToMany(cascade = CascadeType.PERSIST)
+	@ManyToMany(cascade = CascadeType.PERSIST,fetch = FetchType.EAGER)
 	@JoinTable(name="course_module",
 	joinColumns = @JoinColumn(name="course_id"),
 	inverseJoinColumns = @JoinColumn(name="module_id")
