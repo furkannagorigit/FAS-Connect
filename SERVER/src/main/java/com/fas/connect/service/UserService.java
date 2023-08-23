@@ -4,6 +4,8 @@ import java.util.List;
 
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import com.fas.connect.dto.FacultyDTO;
 import com.fas.connect.dto.MarksDTO;
 import com.fas.connect.dto.StudentDTO;
@@ -17,6 +19,6 @@ public interface UserService {
 	void deleteFaculty(Long id);
 	List<MarksDTO> getMarks(Long id);
 	MarksDTO addMarks(MarksDTO marksDTO);
-
+	public UserDetails loadUserByUsername(String username);
 
 }

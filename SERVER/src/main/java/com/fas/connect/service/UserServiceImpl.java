@@ -1,11 +1,18 @@
 package com.fas.connect.service;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.fas.connect.repository.CourseRepository;
@@ -20,6 +27,7 @@ import com.fas.connect.dto.StudentDTO;
 import com.fas.connect.dto.UserDTO;
 import com.fas.connect.entities.Course;
 import com.fas.connect.entities.Faculty;
+import com.fas.connect.entities.Role;
 import com.fas.connect.entities.Student;
 import com.fas.connect.entities.StudentModuleMark;
 import com.fas.connect.entities.User;
@@ -27,7 +35,7 @@ import com.fas.connect.exception_handler.ResourceNotFoundException;
 
 @Service
 @Transactional
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService, UserDetailsService{
 
 
 	@Autowired
@@ -55,6 +63,23 @@ public class UserServiceImpl implements UserService{
 	ModelMapper mapper;
 
 
+	@Override
+    public UserDetails loadUserByUsername(String userEmail) throws UsernameNotFoundException {
+        User user = userRepo.findByEmail(userEmail);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found with email: " + userEmail);
+        }
+
+        return org.springframework.security.core.userdetails.User.builder()
+                .username(user.getEmail())
+                .password(user.getPassword())
+                .authorities(mapRolesToAuthorities(user.getRole()))
+                .build();
+    }
+
+    private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Role role) {
+        return Set.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
+    }
 	//Adding the list of student according course
 	@Override
 	public ResponseEntity<?> addStudents(List<StudentDTO> students, long courseId) {

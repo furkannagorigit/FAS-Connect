@@ -6,6 +6,11 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fas.connect.dto.FacultyDTO;
 import com.fas.connect.dto.MarksDTO;
 import com.fas.connect.dto.StudentDTO;
+import com.fas.connect.entities.JwtResponse;
+import com.fas.connect.entities.LoginForm;
+import com.fas.connect.security.JwtHelper;
 import com.fas.connect.service.UserService;
 
 
@@ -27,6 +35,28 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
+
+	  @Autowired
+	    private AuthenticationManager authenticationManager;
+
+	    @Autowired
+	    private JwtHelper jwtHelper;
+
+	    @PostMapping("/login")
+	    public ResponseEntity<?> login(@RequestBody LoginForm loginForm) throws UsernameNotFoundException {
+	        try {
+	            authenticationManager.authenticate(
+	                    new UsernamePasswordAuthenticationToken(loginForm.getEmail(), loginForm.getPassword())
+	            );
+	        } catch (AuthenticationException e) {
+	            return ResponseEntity.status(401).build(); // Unauthorized
+	        }
+
+	        final UserDetails userDetails = userService.loadUserByUsername(loginForm.getEmail());
+	        final String token = jwtHelper.generateToken(userDetails);
+
+	        return ResponseEntity.ok(new JwtResponse(token));
+	    }
 
 	// To get all users
 	@GetMapping
