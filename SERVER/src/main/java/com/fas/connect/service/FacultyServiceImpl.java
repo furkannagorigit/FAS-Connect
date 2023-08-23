@@ -5,7 +5,9 @@ import javax.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.fas.connect.dto.ApiResponse;
 import com.fas.connect.dto.FacultyDTO;
 import com.fas.connect.entities.Faculty;
 import com.fas.connect.exception_handler.ResourceNotFoundException;
@@ -17,11 +19,15 @@ public class FacultyServiceImpl implements FacultyService{
 
 	@Autowired
 	FacultyRepository facultyRepo;
-	
+
+	@Autowired
+	ImageHandlingService imageService;
+
+
 	@Autowired
 	ModelMapper mapper;
-	
-	
+
+
 	@Override
 	public FacultyDTO getFacultyDetails(Long facultyId) {
 		Faculty faculty = facultyRepo.findById(facultyId).
@@ -29,14 +35,17 @@ public class FacultyServiceImpl implements FacultyService{
 		return mapper.map(faculty,FacultyDTO.class);
 	}
 
-	//To update faculty
+
+	//Service to edit faculty details
 	@Override
-	public FacultyDTO updateFaculty(Long id, FacultyDTO facultyDTO) {
-		Faculty faculty = facultyRepo.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Faculty not found"));
-		mapper.map(facultyDTO, faculty);		
+	public FacultyDTO updateFaculty(FacultyDTO facultyDTO) {
+		Faculty faculty = facultyRepo
+				.findByFacultyIdAndUserEmail(facultyDTO.getFacultyId(), facultyDTO.getUser().getEmail())
+				.orElseThrow(()-> new ResourceNotFoundException("Faculty not found"));
+		mapper.map(facultyDTO, faculty);
 		return mapper.map(facultyRepo.save(faculty), FacultyDTO.class);
 	}
+
 
 
 }

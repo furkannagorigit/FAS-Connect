@@ -2,19 +2,23 @@ package com.fas.connect.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.fas.connect.dto.ApiResponse;
 import com.fas.connect.dto.CommentDTO;
-import com.fas.connect.dto.PostRequestDTO;
-import com.fas.connect.dto.QnADTO;
-import com.fas.connect.entities.QnA;
+import com.fas.connect.dto.PostDTO;
+import com.fas.connect.dto.QnAResponseDTO;
 
 public interface QnAService {
 
-	 public List<QnADTO> getAllQnAs();
+//	 public List<QnAResponseDTO> getAllQnAs();
+	
+	public Page<QnAResponseDTO> getAllQnAs(Pageable pageable);
 
-	    public PostRequestDTO addQnA(Long userId, PostRequestDTO qnaDTO) ;
+	    public PostDTO addQnA(Long userId, PostDTO qnaDTO) ;
 
-	    public QnADTO editQnA(Long postId, QnADTO announcementDTO) ;
+	    public PostDTO editQnA(Long postId, PostDTO announcementDTO) ;
 	    
 	    ApiResponse commentQnA(CommentDTO commentDTO);
 		ApiResponse uncommentQnA(Long commentId);

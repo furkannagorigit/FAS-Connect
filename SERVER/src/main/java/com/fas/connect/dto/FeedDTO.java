@@ -1,22 +1,21 @@
 package com.fas.connect.dto;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-
 import com.fas.connect.entities.PostType;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+@NoArgsConstructor
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @ToString
-public class PostDTO {
+public class FeedDTO {
 	private String text;
-    private LocalDateTime createdAt = LocalDateTime.now();
-    private PostType type;
+	private LocalDateTime createdAt = LocalDateTime.now();
+	private final PostType type = PostType.FEED;
+	private String feedImg;
+
+   
 }

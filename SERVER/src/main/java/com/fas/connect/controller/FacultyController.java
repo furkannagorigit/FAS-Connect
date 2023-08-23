@@ -7,18 +7,28 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.fas.connect.dto.FacultyDTO;
+import com.fas.connect.exception_handler.ResourceNotFoundException;
 import com.fas.connect.service.FacultyService;
+import com.fas.connect.service.ImageHandlingService;
 
 @RestController
 @RequestMapping("/faculty/profile")
 @Validated
 public class FacultyController {
+	@Autowired
+	private ImageHandlingService imageService;
+
 	@Autowired
 	private FacultyService facultyService;
 
@@ -30,9 +40,18 @@ public class FacultyController {
 	
 	
 	//PUT mapping to update faculty details
-		@PutMapping("/editFaculty/{userId}")
-		public ResponseEntity<?> editFaculty(@PathVariable Long userId, @RequestBody @Valid FacultyDTO facultyDTO){
-			facultyService.updateFaculty(userId, facultyDTO);
-			return ResponseEntity.status(HttpStatus.OK).body("Faculty updated successfully!");
+		@PutMapping
+		public ResponseEntity<FacultyDTO> updateFaculty(@RequestBody FacultyDTO facultyDTO) {
+		        return ResponseEntity.ok(facultyService.updateFaculty(facultyDTO));
 		}
+	
+		//Post mapping to upload profile image
+		@PostMapping(value = "/image/{facultyId}", consumes = "multipart/form-data")
+		public ResponseEntity<?> uploadImage(@PathVariable Long facultyId, @RequestParam MultipartFile imageFile)
+				 {
+			System.out.println("in upload img " + facultyId);
+			return ResponseEntity.status(HttpStatus.CREATED).body(imageService.uploadImage(facultyId, imageFile));
+		}
+
+
 }

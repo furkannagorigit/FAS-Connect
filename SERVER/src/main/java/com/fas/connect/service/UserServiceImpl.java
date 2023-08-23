@@ -59,8 +59,10 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public ResponseEntity<?> addStudents(List<StudentDTO> students, long courseId) {
 
-		Course course = courseRepo.findById(courseId).orElseThrow();
+		Course course = courseRepo.findById(courseId).orElseThrow(() -> new ResourceNotFoundException("Course not found"));
 		for (StudentDTO studentDTO : students) {
+			User u1 = studentDTO.getUser();
+			u1.getProfileImg();
 			User user = userRepo.save(studentDTO.getUser());
 			Student student = new Student(studentDTO.getRollNo(), user);
 			String to = student.getUser().getEmail();

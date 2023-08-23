@@ -1,15 +1,18 @@
 package com.fas.connect.service;
 
 import java.util.List;
-import com.fas.connect.dto.FeedResponseDTO;
-import com.fas.connect.dto.PostRequestDTO;
-import com.fas.connect.entities.Announcement;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import com.fas.connect.dto.PostDTO;
 
 public interface AnnouncementService {
 
-	public List<PostRequestDTO> getAllAnnouncements(); 
-	public PostRequestDTO addAnnouncement (Long userId, PostRequestDTO feedDTO);
-	public PostRequestDTO editAnnouncement(Long postId, PostRequestDTO announcementDTO);
+//	public List<PostDTO> getAllAnnouncements(); 
+	public Page<PostDTO> getAllAnnouncements(Pageable pageable);
+	public PostDTO addAnnouncement (Long userId, PostDTO feedDTO);
+	public PostDTO editAnnouncement(Long postId, PostDTO announcementDTO);
 
 	
 }

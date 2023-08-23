@@ -8,6 +8,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
@@ -17,24 +18,25 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
 @Entity  
 @Table(name="feed")  
 @PrimaryKeyJoinColumn(name="id")  
 public class Feed extends Post {
 	
-	@JsonIgnore
-	@OneToMany(mappedBy = "feedId", cascade = CascadeType.ALL,orphanRemoval = true)
-	private List<PostLike> likes = new ArrayList<>();
+	@Lob
+	private String feedImg;
 
 	@JsonIgnore
-	@OneToMany(mappedBy = "postId", cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.EAGER) 
-	private List<Comment> comments = new ArrayList<>();
+	@OneToMany(mappedBy = "feedId", cascade = CascadeType.ALL,orphanRemoval = true)
+  private List<PostLike> likes = new ArrayList<>();
+
+	@JsonIgnore
+  @OneToMany(mappedBy = "postId", cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.EAGER) 
+  private List<Comment> comments = new ArrayList<>();
 
 	public void addLike(User u) {
 		PostLike post = new PostLike();

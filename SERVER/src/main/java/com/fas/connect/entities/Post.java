@@ -30,7 +30,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @Table(name="post")
-@ToString
+@ToString(exclude = "createdBy")
 @Inheritance(strategy=InheritanceType.JOINED)  
 public class Post {
 	@Id

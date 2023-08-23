@@ -13,8 +13,12 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -57,7 +61,9 @@ public class User {
 	@Column(length=255, nullable = false)
 	private String password;
 	
-
+	@Lob
+	private String profileImg;
+	
 	@OneToMany(mappedBy = "createdBy", 
 			cascade = CascadeType.ALL, 
 			orphanRemoval = true,
@@ -65,8 +71,8 @@ public class User {
 	private List<Post> posts = new ArrayList<>();
 	
 	public void addPost(Post p) {
-		p.setCreatedBy(this);
 		posts.add(p);
+		p.setCreatedBy(this);
 	}
 	
 	public void deletePost(Post p) {

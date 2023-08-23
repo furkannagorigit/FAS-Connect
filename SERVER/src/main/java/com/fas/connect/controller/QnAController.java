@@ -1,13 +1,15 @@
 package com.fas.connect.controller;
 
 import com.fas.connect.dto.CommentDTO;
-import com.fas.connect.dto.PostRequestDTO;
-import com.fas.connect.dto.QnADTO;
+import com.fas.connect.dto.PostDTO;
+import com.fas.connect.dto.QnAResponseDTO;
 import com.fas.connect.entities.Post;
 import com.fas.connect.entities.QnA;
 import com.fas.connect.service.PostService;
 import com.fas.connect.service.QnAService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,23 +22,30 @@ public class QnAController {
 	@Autowired
     private QnAService qnaService;
 
-    @GetMapping
-    public ResponseEntity<List<QnADTO>> getAllQnAs() {
-        List<QnADTO> QnADTOs = qnaService.getAllQnAs();
-        if (QnADTOs.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        }
-        return ResponseEntity.ok(QnADTOs);
-    }
+//    @GetMapping
+//    public ResponseEntity<List<QnAResponseDTO>> getAllQnAs() {
+//        List<QnAResponseDTO> QnADTOs = qnaService.getAllQnAs();
+//        if (QnADTOs.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+//        }
+//        return ResponseEntity.ok(QnADTOs);
+//    }
+	 @GetMapping
+	    public ResponseEntity<Page<QnAResponseDTO>> getAllQnAs(Pageable pageable) {
+	        Page<QnAResponseDTO> qnaDTOPage = qnaService.getAllQnAs(pageable);
+	        if (qnaDTOPage.isEmpty()) {
+	            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+	        }
+	        return ResponseEntity.ok(qnaDTOPage);
+	    }
 
     @PostMapping("/addQnA/{userId}")
-    public ResponseEntity<?> addQnA(@RequestBody PostRequestDTO qnaDTO,@PathVariable Long userId) {
-    	System.out.println(qnaDTO.toString());
+    public ResponseEntity<?> addQnA(@RequestBody PostDTO qnaDTO,@PathVariable Long userId) {
     	return ResponseEntity.status(HttpStatus.CREATED).body(qnaService.addQnA(userId,qnaDTO));
     }
 
     @PutMapping("/editQnA/{postId}")
-    public ResponseEntity<?> editQnA(@RequestBody  QnADTO qnaDTO,@PathVariable Long postId) {
+    public ResponseEntity<?> editQnA(@RequestBody  PostDTO qnaDTO,@PathVariable Long postId) {
     	System.out.println(qnaDTO.toString());
     	return ResponseEntity.status(HttpStatus.CREATED).body(qnaService.editQnA(postId,qnaDTO));
 

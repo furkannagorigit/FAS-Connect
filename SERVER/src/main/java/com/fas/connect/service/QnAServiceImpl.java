@@ -3,8 +3,9 @@ package com.fas.connect.service;
 
 import com.fas.connect.dto.ApiResponse;
 import com.fas.connect.dto.CommentDTO;
-import com.fas.connect.dto.PostRequestDTO;
-import com.fas.connect.dto.QnADTO;
+import com.fas.connect.dto.FeedDTO;
+import com.fas.connect.dto.PostDTO;
+import com.fas.connect.dto.QnAResponseDTO;
 import com.fas.connect.entities.Announcement;
 import com.fas.connect.entities.Comment;
 import com.fas.connect.entities.Feed;
@@ -18,6 +19,8 @@ import com.fas.connect.repository.UserRepository;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,25 +38,31 @@ public class QnAServiceImpl implements QnAService{
     @Autowired
     private ModelMapper modelMapper;
 
-    public List<QnADTO> getAllQnAs() {
-    	return qnARepo.findAll().stream()
-            .map(post -> modelMapper.map(post, QnADTO.class))
-            .collect(Collectors.toList());
+//    public List<QnAResponseDTO> getAllQnAs() {
+//    	return qnARepo.findAll().stream()
+//            .map(post -> modelMapper.map(post, QnAResponseDTO.class))
+//            .collect(Collectors.toList());
+//    }
+    
+    @Override
+    public Page<QnAResponseDTO> getAllQnAs(Pageable pageable) {
+        Page<QnA> qnAPage = qnARepo.findAll(pageable);
+        return qnAPage.map(qna -> modelMapper.map(qna, QnAResponseDTO.class));
     }
 
 	@Override
-	public PostRequestDTO addQnA(Long userId, PostRequestDTO qnaDTO) {
+	public PostDTO addQnA(Long userId, PostDTO qnaDTO) {
 			QnA qna = modelMapper.map(qnaDTO, QnA.class);
 			User user = userRepo.findById(userId)
 					.orElseThrow(() -> new ResourceNotFoundException("User not found"));
 			qna.setCreatedBy(user);
 			user.addPost(qna);
-			return modelMapper.map(qnARepo.save(qna), PostRequestDTO.class);
+			return modelMapper.map(qnARepo.save(qna), PostDTO.class);
 			
 		}
-
+	
 	@Override
-	public QnADTO editQnA(Long postId, QnADTO qnaDTO) {
+	public PostDTO editQnA(Long postId, PostDTO qnaDTO) {
 		QnA qna = qnARepo.findById(postId)
 				.orElseThrow(()-> new RuntimeException());
 		User user = qna.getCreatedBy();
@@ -68,7 +77,7 @@ public class QnAServiceImpl implements QnAService{
 		qna.setId(postId);
 		user.addPost((Post)qna);
 		userRepo.save(user);
-		return modelMapper.map(qna, QnADTO.class);
+		return modelMapper.map(qna, PostDTO.class);
 	}
 	
 	@Override
@@ -79,7 +88,8 @@ public class QnAServiceImpl implements QnAService{
 		c.setUser(foundUser);
 		c.setPostId(foundQnA);
 		c.setText(commentDTO.getText());
-		foundQnA.addComment(c, foundUser);;
+		foundQnA.addComment(c, foundUser);
+		qnARepo.save(foundQnA);
 		return new ApiResponse("commented");
 
 	}
@@ -87,13 +97,18 @@ public class QnAServiceImpl implements QnAService{
 
 	@Override
 	public ApiResponse uncommentQnA(Long commentId) {
+//		Comment c = commentRepo.findById(commentId).orElseThrow(() -> new ResourceNotFoundException("comment not found"));
+//		User foundUser = userRepo.findById(c.getUser().getId()).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+//		QnA foundQnA = qnARepo.findById(c.getPostId().getId()).orElseThrow(() -> new ResourceNotFoundException("Post not found"));
+//		foundQnA.removeComment(c,foundUser);
+//		qnARepo.save(foundQnA);
+//		return new ApiResponse("Post uncommented");
+
 		Comment c = commentRepo.findById(commentId).orElseThrow(() -> new ResourceNotFoundException("comment not found"));
 		User foundUser = userRepo.findById(c.getUser().getId()).orElseThrow(() -> new ResourceNotFoundException("User not found"));
 		QnA foundQnA = qnARepo.findById(c.getPostId().getId()).orElseThrow(() -> new ResourceNotFoundException("Post not found"));
 		foundQnA.removeComment(c,foundUser);
-		return new ApiResponse("Post uncommented");
-
+		return new ApiResponse("Post disliked");
 	}
 
 	}
-

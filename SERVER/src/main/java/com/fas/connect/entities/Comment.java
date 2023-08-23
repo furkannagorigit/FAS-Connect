@@ -7,6 +7,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,6 +24,7 @@ public class Comment {
 	
 	private String text;
 	
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "post_id") 
 	private Post postId;

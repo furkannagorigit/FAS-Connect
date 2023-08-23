@@ -12,12 +12,10 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
 @Entity  
 @Table(name="announcement")  
 @PrimaryKeyJoinColumn(name="id") 
