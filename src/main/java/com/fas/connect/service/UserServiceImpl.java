@@ -6,6 +6,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.fas.connect.repository.CourseRepository;
@@ -16,6 +17,7 @@ import com.fas.connect.repository.StudentRepository;
 import com.fas.connect.repository.UserRepository;
 import com.fas.connect.dto.FacultyDTO;
 import com.fas.connect.dto.MarksDTO;
+import com.fas.connect.dto.SigninRequest;
 import com.fas.connect.dto.StudentDTO;
 import com.fas.connect.dto.UserDTO;
 import com.fas.connect.entities.Course;
@@ -53,9 +55,19 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	ModelMapper mapper;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 
-	//Adding the list of student according course
+	@Override
+	public UserDTO signIn(SigninRequest request) {
+		User user = userRepo.findByEmail(request.getEmail()).orElseThrow(() -> new ResourceNotFoundException("Faculty not found"));
+        return mapper.map(user, UserDTO.class);
+	}
+
+	
+	//Adding the list of student according course	
 	@Override
 	public ResponseEntity<?> addStudents(List<StudentDTO> students, long courseId) {
 
@@ -91,6 +103,7 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public FacultyDTO addFaculty(FacultyDTO facultyDTO) {
 		Faculty faculty = mapper.map(facultyDTO, Faculty.class);
+		faculty.getUser().setPassword(passwordEncoder.encode(facultyDTO.getUser().getPassword()));
 		Faculty facultyPersist = facultyRepo.save(faculty);
 		facultyPersist.setFacultyId("F00"+facultyPersist.getUserId());
 		
@@ -99,7 +112,7 @@ public class UserServiceImpl implements UserService{
         String text = "Hello " + faculty.getUser().getFirstName() +",you have successfully registered in FASConnect.\n" +
         "Your User Id is F00" + facultyPersist.getUserId() + ".\n To SignIn use your ID and EmailID " + faculty.getUser().getEmail() + " Thank you!";
         emailService.sendEmail(to, subject, text);
-	
+
         return mapper.map(facultyRepo.save(facultyPersist), FacultyDTO.class);
 	}
 	

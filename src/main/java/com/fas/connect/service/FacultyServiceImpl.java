@@ -12,6 +12,8 @@ import com.fas.connect.dto.FacultyDTO;
 import com.fas.connect.entities.Faculty;
 import com.fas.connect.exception_handler.ResourceNotFoundException;
 import com.fas.connect.repository.FacultyRepository;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
 @Service
 @Transactional
 
@@ -26,6 +28,9 @@ public class FacultyServiceImpl implements FacultyService{
 
 	@Autowired
 	ModelMapper mapper;
+
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 
 	@Override
@@ -44,8 +49,12 @@ public class FacultyServiceImpl implements FacultyService{
 				.orElseThrow(()-> new ResourceNotFoundException("Faculty not found"));
 		mapper.map(facultyDTO, faculty);
 		faculty.getUser().setId(faculty.getUserId());
+		System.out.println(facultyDTO.getUser().getPassword().length());
+		faculty.getUser().setPassword(passwordEncoder.encode(facultyDTO.getUser().getPassword()));
 		return mapper.map(facultyRepo.save(faculty), FacultyDTO.class);
 	}
+
+
 
 
 

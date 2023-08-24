@@ -19,4 +19,6 @@ public class PostDTO {
 	private String text;
     private LocalDateTime createdAt = LocalDateTime.now();
     private PostType type;
+    private String createdByName;
+    private Long createdById;
 }

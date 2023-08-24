@@ -93,6 +93,7 @@ public class FeedController {
 			@RequestParam("imageFile") MultipartFile imageFile) throws JsonMappingException, JsonProcessingException
 
 	{
+		System.out.println("hiiiii");
 		System.out.println(imageFile.getOriginalFilename());
 		FeedDTO feedDTO = objectMapper.readValue(feed, FeedDTO.class);
 		feedDTO = imageService.addImageInFeed(feedDTO, imageFile);

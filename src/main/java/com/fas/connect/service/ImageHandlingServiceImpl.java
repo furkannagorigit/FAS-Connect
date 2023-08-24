@@ -30,14 +30,11 @@ public class ImageHandlingServiceImpl implements ImageHandlingService {
 
 	@PostConstruct
 	public void init() {
-		System.out.println("in init " + folderLocation);
 		File folder = new File(folderLocation);
 		if (folder.exists()) {
-			System.out.println("folder exists alrdy !");
 		} else {
 			// no --create a folder
 			folder.mkdir();
-			System.out.println("created a folder !");
 		}
 	}
 
@@ -45,7 +42,6 @@ public class ImageHandlingServiceImpl implements ImageHandlingService {
 	public FeedDTO addImageInFeed(FeedDTO feedDTO,MultipartFile image)
 	{
 		String path = folderLocation.concat(feedDTO.getType()+image.getOriginalFilename());
-		System.out.println(path);
 		try
 		{
 		FileUtils.writeByteArrayToFile(new File(path), image.getBytes());

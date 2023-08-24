@@ -16,4 +16,6 @@ public class FeedResponseDTO {
 	private FeedDTO feed;
 	private int likes;
 	private List<Comment> comments = new ArrayList<Comment>();
+	private String createdByName;
+    private Long createdById;
 }

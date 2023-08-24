@@ -67,6 +67,9 @@ public class FeedServiceImpl implements FeedService{
             f.setFeed(modelMapper.map(feed, FeedDTO.class));
             f.setLikes((int) feed.getLikes().size());
             f.setComments(feed.getComments());
+            f.setCreatedById(feed.getCreatedBy().getId());
+            f.setCreatedByName(feed.getCreatedBy().getFirstName()
+            					+ feed.getCreatedBy().getLastName());
             return f;
         });
     }

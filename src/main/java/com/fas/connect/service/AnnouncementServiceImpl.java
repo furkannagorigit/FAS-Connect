@@ -31,6 +31,8 @@ public class AnnouncementServiceImpl implements AnnouncementService{
 		return announcementRepo.findAll().stream()
 				.map(announcement -> {
 					PostDTO post = modelMapper.map(announcement, PostDTO.class);
+					post.setCreatedById(announcement.getCreatedBy().getId());
+					post.setCreatedByName(announcement.getCreatedBy().getFirstName()+" "+announcement.getCreatedBy().getLastName());
 					return post;
 				})
 				.collect(Collectors.toList());

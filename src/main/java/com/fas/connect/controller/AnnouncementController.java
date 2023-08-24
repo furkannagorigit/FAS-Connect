@@ -28,7 +28,7 @@ public class AnnouncementController {
     @PostMapping("/addAnnouncement/{userId}")
     public ResponseEntity<?> addAnnouncement(@RequestBody  PostDTO announcementDTO,@PathVariable Long userId) {
 //        	System.out.println(announcementDTO.toString());
-        	return ResponseEntity.status(HttpStatus.CREATED).body(announcementService.addAnnouncement(userId,announcementDTO));
+        	return ResponseEntity.status(HttpStatus.OK).body(announcementService.addAnnouncement(userId,announcementDTO));
     }
 
     @PutMapping("/editAnnouncement/{postId}")

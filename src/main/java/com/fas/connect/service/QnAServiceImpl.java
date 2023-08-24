@@ -36,9 +36,17 @@ public class QnAServiceImpl implements QnAService{
     @Autowired
     private ModelMapper modelMapper;
 
-    public List<QnAResponseDTO> getAllQnAs() {
+
+public List<QnAResponseDTO> getAllQnAs() {
     	return qnARepo.findAll().stream()
-            .map(post -> modelMapper.map(post, QnAResponseDTO.class))
+            .map(post -> {
+            	QnAResponseDTO qna = modelMapper.map(post, QnAResponseDTO.class);
+            	qna.setAnsweredById(post.getAnswerBy().getUserId());
+            	qna.setCreatedByName(post.getCreatedBy().getFirstName()
+            						+ post.getCreatedBy().getLastName());
+            	qna.setCreatedById(post.getCreatedBy().getId());
+            	return qna;
+            	})
             .collect(Collectors.toList());
     }
 

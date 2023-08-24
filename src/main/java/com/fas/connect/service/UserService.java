@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import com.fas.connect.dto.FacultyDTO;
 import com.fas.connect.dto.MarksDTO;
+import com.fas.connect.dto.SigninRequest;
 import com.fas.connect.dto.StudentDTO;
 import com.fas.connect.dto.UserDTO;
 
@@ -17,6 +18,7 @@ public interface UserService {
 	void deleteFaculty(Long id);
 	List<MarksDTO> getMarks(Long id);
 	MarksDTO addMarks(MarksDTO marksDTO);
+	UserDTO signIn(SigninRequest request);
 
 
 }
