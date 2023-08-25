@@ -1,12 +1,42 @@
 import React, { useState } from 'react';
 import './QnACard.css';
+import { toast } from 'react-toastify';
+import { log } from '../../Utils/utils';
+import { addAnswer } from '../../Services/QnAService';
 
-const QnACard = ({ post }) => {
+const QnACard = ( props ) => {
+  const [answerText, setAnswerText] = useState('');
+
+  const handleAnswerSubmit = async (event) => {
+    event.preventDefault();
+
+    const qnaId = props.qna.id
+    const answerdById = sessionStorage.getItem('userId')
+
+    const ansData = {
+      "answeredById": answerdById,
+      "answer": answerText
+    }
+
+    const response = await addAnswer(qnaId, ansData)
+    if (response['status'] == 200) {
+      log(response)
+      toast.success('Answer Added successfully')
+    } 
+    else if(response == "null")
+    {
+        toast.error('Something went wrong')
+    }
+  };
+
   const [expanded, setExpanded] = useState(false);
-
+  
   const toggleExpandComments = () => {
     setExpanded(!expanded);
   };
+
+  var ans = ''
+  var ansBy = 'fac1'
 
   return (
     <>
@@ -15,8 +45,8 @@ const QnACard = ({ post }) => {
         <div className="post-top" style={{background: "-webkit-linear-gradient(lavender ,white, lavender)", borderRadius:"5px"}}>
           <div className="post-top-left">
             <img className="post-profile-img" src={"./data/images/laptop_female.png"} alt="" />
-            <span className="post-username">Student</span>
-            <span className="post-date">dd/mm hh:mm</span>
+            <span className="post-username">{props.qna.createdByName}</span>
+            <span className="post-date">{props.qna.createdAt}</span>
           </div>
           <div className="post-top-right">
             <button className="post-menu-btn">
@@ -27,21 +57,35 @@ const QnACard = ({ post }) => {
         </div>
         <hr />
         <div className="post-middle">
-          <p className="post-text" style={{ fontWeight: "bolder", fontSize: "18px" }}>This is a sample Question
-            blah blah blah blah blah blah blah blah
-            blah blah blah blah blah blah blah blah
-            blah blah blah blah blah blah blah blah
-            blah blah blah blah blah blah blah blah
-            blah blah blah blah blah blah blah blah
+          <p className="post-text" style={{ fontWeight: "bolder", fontSize: "18px" }}>
+            {props.qna.text}
           </p>
         </div>
         <hr />
         <div>
-          <span className="post-username">Faculty: </span>
-          <p className="post-text" style={{ display: "inline", fontSize: "16px" }}>
-            this is a sample answer
-          </p>
-        </div>
+        {props.qna.answer ? (
+          <>
+            <span className="post-username">{props.qna.answeredByName}: </span>
+            <p className="post-text" style={{ display: "inline", fontSize: "16px" }}>
+              {props.qna.answer}
+            </p>
+          </>
+        ) : sessionStorage.getItem('role') === "FACULTY" ? (
+          <form onSubmit={handleAnswerSubmit}>
+            <input
+              type="text"
+              placeholder="Question not answered yet..."
+              value={answerText}
+              onChange={(e) => setAnswerText(e.target.value)}
+              className="comment-input"
+            />
+            <button type="submit" className="comment-submit-btn">
+              <i className="glyphicon glyphicon-send"></i>
+            </button>
+          </form>
+        ) : null}
+      </div>
+
         <hr />
 
         {/* Comments Section */}

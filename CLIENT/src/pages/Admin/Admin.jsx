@@ -3,7 +3,7 @@ import { useEffect, useState} from 'react';
 import './styles.css';
 import UserCard from './UserCard';
 import { getAllUsers, deleteStudent, deleteFaculty} from '../../Services/userService';
-import { Link, useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { log } from '../../Utils/utils';
 
 function Admin() {
@@ -12,52 +12,61 @@ function Admin() {
     
     const history = useHistory();
 
-    const onDelete = async (id, role)=>{
-        console.log("onDelete called: ",id, role);
-        if(role=="FACULTY"){
-            log("deleteFaculty")
-            const response = await deleteFaculty(id)
-            if (response['status'] == 200) {
-                log(response)
-              } else {
-                toast.error('Error while calling DELETE: /deleteFaculty api')
-              }
-        }
-        else{
-            log("deleteStudent")
-            log("deleteFaculty")
-            const response = await deleteStudent(id)
-            if (response['status'] == 200) {
-                log(response)
-              } else {
-                toast.error('Error while calling get DELETE: /deleteStudent api')
-              }
-        }
-        loadUsers()
-    }
+    //Load list of users
     const loadUsers = async () =>{
       const response = await getAllUsers()
       if (response['status'] == 200) {
+        log(response.data)
         setUsers(response.data)
-      } else {
-        toast.error('Error while calling get /users api')
+      } else if(response == "null")
+      {
+        toast.error('Could not fetch list of users')
       }
     }
 
-    const [searchText, setSearchText] = useState("");
-
+    //View list of users on loading component
     useEffect(() => {
-        console.log("Inside COmponent Did Mount")
         loadUsers()
-        console.log("Users:",users)
     }, [])
+
+    const deleteUser = async (id, role)=>{
+        console.log("onDelete called: ",id, role);
+        if(role=="FACULTY"){
+            log("deleteFaculty")
+            const response = await deleteFaculty(id);
+            if (response['status'] == 200) {
+                log(response)
+                toast.success('Student deleted successfully')
+              } 
+            else if(response == "null")
+            {
+                toast.error('Something went wrong')
+            }
+        }
+        else{
+            log("deleteStudent")
+            const response = await deleteStudent(id);
+            if (response['status'] == 200) {
+                log(response)
+                toast.success('Student deleted successfully')
+              }
+            else if(response == "null")
+            {
+                toast.error('Something went wrong')
+            }
+        }
+        loadUsers()
+    }
+
+    //Search and filter
+
+    const [searchText, setSearchText] = useState("");
 
     const [role, setRole] = useState('student');
 
     const onSearch = (args) => {
         setSearchText(args.target.value);
     }
-
 
     const handleRoleChange = (event) => {
         setRole(event.target.value);
@@ -71,14 +80,11 @@ function Admin() {
             console.log(role);
             setSearchText("faculty")
         }
-        else
-        {
-          setSearchText("u")
-        }
     };
   
     return (<>
         <div className="col-md-7 " style={{ flex: '1' }}>
+            
             <h2 >Admin Manager</h2>
             <input type="search" name="" id="input" class="form-control"
                 required="required" placeholder="search.." style={{ width: "20%" }}
@@ -109,8 +115,11 @@ function Admin() {
                 </label>
             </div>
 
-            <button type="button" class="btn btn-primary" onClick={()=>history.push('/Admin/AddUsers')}>Add Users</button>
+            <button type="button" class="btn btn-primary" onClick={()=>history.push('/Admin/AddStudent')}>Add Users</button>
            
+            <button type="button" class="btn btn-primary" onClick={()=>history.push('/Admin/AddFaculty')}>Add Faculty</button>
+           
+            <div className="col-md-12" style={{ flex: '1' }}>
             <div className="scrollable" style={{height:"60%"}}>
             <table className="table table-hover table-responsive" style={{ margin: 50 }}>
                 <thead>
@@ -122,7 +131,6 @@ function Admin() {
                 </thead>
                 <tbody>
                     {users.map((user) => {
-                        console.log("user")
                         {
                             if (searchText != "") {
                                 if (user.firstName.toLowerCase().includes(searchText.toLowerCase())
@@ -131,7 +139,7 @@ function Admin() {
                                     return <UserCard
                                         key={user.id} 
                                         user={user}
-                                        onDelete={onDelete}
+                                        onDelete={deleteUser}
                                     />
                                 }
                                 else {
@@ -142,7 +150,7 @@ function Admin() {
                                 return <UserCard
                                     key={user.id}
                                     user={user}
-                                    onDelete={onDelete}
+                                    onDelete={deleteUser}
                                 />;
                             }
                         }
@@ -150,6 +158,7 @@ function Admin() {
                     )}
                 </tbody>
             </table>
+            </div>
             </div>
         </div>
     </>);

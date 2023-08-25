@@ -36,6 +36,8 @@ public class SecurityConfig {
 		.antMatchers("/users/signin",
 				"/faculty/profile",
 				"/users/addFaculty",
+				"/users/**",
+				"/course/**",
 				"/swagger*/**", 
 				"/v*/api-docs/**").permitAll()// for incoming req ending
 		// with /products/view :

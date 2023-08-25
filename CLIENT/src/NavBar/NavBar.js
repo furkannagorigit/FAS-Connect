@@ -3,8 +3,17 @@ import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 function Navbar() {
         const history = useHistory();
         const handleLogout = () => {
-            //Implement logout functionality
-            history.push("/")
+     sessionStorage.removeItem('jwt');
+        sessionStorage.removeItem('userId');
+        sessionStorage.removeItem('firstName');
+        sessionStorage.removeItem('lastName');
+        sessionStorage.removeItem('dateOfBirth');
+        sessionStorage.removeItem('gender');
+        sessionStorage.removeItem('role');
+        sessionStorage.removeItem('mobile');
+        sessionStorage.removeItem('email');
+        sessionStorage.removeItem('profileImg');
+        history.push("/")
         };
     return (<>
         {/* Navbar */}
@@ -35,20 +44,11 @@ function Navbar() {
                 <div className="collapse navbar-collapse" id="navbar-collapse">
                     <ul className="nav navbar-nav navbar-right">
                         <li>
-                            <a href="#" style={{ color: '#9370db' }}>
+                            <a href="/Announcements" style={{ color: '#9370db' }}>
                                 <span className="glyphicon glyphicon-link"></span> Home
                             </a>
                         </li>
-                        <li>
-                            <a href="#" style={{ color: '#9370db' }}>
-                                <span className="glyphicon glyphicon-link"></span> About us
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" style={{ color: '#9370db' }}>
-                                <span className="glyphicon glyphicon-link"></span> Contact us
-                            </a>
-                        </li>
+                       
                         <li className="dropdown">
                             <a href="#" className="dropdown-toggle" data-toggle="dropdown">
                                 <img src="./data/images/read_male.png" alt="Profile" className="img-circle"
@@ -60,8 +60,14 @@ function Navbar() {
                                         View Profile
                                     </a>
                                 </li>
+                                {/* <li>
+                                    <a href="FAQ" style={{ color: '#9370db' }}>
+                                        FaQ
+                                    </a>
+                                </li> */}
+                                
                                 <li>
-                                    <a href="/MyProfile" style={{ color: '#9370db' }} onClick={handleLogout}>
+                                    <a href="/" style={{ color: '#9370db' }} onClick={handleLogout}>
                                         Log Out
                                     </a>
                                 </li>

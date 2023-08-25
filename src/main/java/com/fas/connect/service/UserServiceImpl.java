@@ -75,8 +75,10 @@ public class UserServiceImpl implements UserService{
 		for (StudentDTO studentDTO : students) {
 			User u1 = studentDTO.getUser();
 			u1.getProfileImg();
+			studentDTO.getUser().setPassword(passwordEncoder.encode(studentDTO.getUser().getPassword()));
 			User user = userRepo.save(studentDTO.getUser());
 			Student student = new Student(studentDTO.getRollNo(), user);
+			
 			String to = student.getUser().getEmail();
 			String subject = "Welcome to FASConnect";
 	        String text = "Hello " + studentDTO.getUser().getFirstName() +",you have successfully registered in FASConnect.\n" +
@@ -84,12 +86,10 @@ public class UserServiceImpl implements UserService{
 	        emailService.sendEmail(to, subject, text);
 			
 			course.addStudent(student);
-
 		}
 		String successMessage = "Students added successfully to the course.";
 		return ResponseEntity.status(HttpStatus.CREATED).body(successMessage);	
 	}
-
 	// To get All users
 	@Override
 	public List<UserDTO> getAllUsers() {

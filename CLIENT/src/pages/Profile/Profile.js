@@ -8,6 +8,29 @@ import QnACard from '../QnA/QnACard';
 
 const MyProfile = () => {
   const history = useHistory();
+
+  // Example session data
+  var sessionRole = sessionStorage.getItem("userRole"); // Replace with your session role logic
+  var sessionGender = sessionStorage.getItem("userGender"); // Replace with your session gender logic
+
+  sessionRole = "FACULTY"
+  sessionGender = "FEMALE"
+
+  // Function to determine the avatar based on role and gender
+  const getAvatarSource = () => {
+    if (sessionRole === "STUDENT" && sessionGender === "MALE") {
+      return process.env.PUBLIC_URL + "/data/Images/male-student-avatar.png";
+    } else if (sessionRole === "STUDENT" && sessionGender === "FEMALE") {
+      return process.env.PUBLIC_URL + "/data/Images/female-student-avatar.png";
+    }else if (sessionRole === "FACULTY" && sessionGender === "MALE") {
+      return process.env.PUBLIC_URL + "/data/Images/male-faculty-avatar.png";
+    } else if (sessionRole === "FACULTY" && sessionGender === "FEMALE") {
+       return process.env.PUBLIC_URL + "/data/Images/female-faculty-avatar.png";
+    } else {
+      return process.env.PUBLIC_URL + "/data/Images/profile.png";
+    }
+  };
+
   const [showPosts, setShowPosts] = useState(true);
 
   const handlePostsClick = () => {
@@ -29,7 +52,7 @@ const MyProfile = () => {
                 <div className="profile-header-cover"></div>
                 <div className="profile-header-content">
                   <div className="profile-header-img">
-                    <img src="./data/images/write_male.png" alt="" />
+                    <img src={getAvatarSource()} alt="" />
                   </div>
                   <div className="profile-header-info">
                     <h4 className="m-t-10 m-b-5">Sean Ngu</h4>
@@ -51,10 +74,10 @@ const MyProfile = () => {
                   <div className="col-md-12" style={{ flex: '1' }}>
 
                     <div className="scrollable">
-                      <FeedCard />
+                      {/* <FeedCard />
                       <QnACard />
                       <FeedCard />
-                      <FeedCard />
+                      <FeedCard /> */}
                     </div>
                   </div>
                 ) : (

@@ -12,7 +12,8 @@ import Admin from "../pages/Admin/Admin";
 import MyProfile from "../pages/Profile/Profile";
 import EditProfile from "../pages/Profile/EditProfile";
 import CreateFeed from "../pages/Feed/CreateFeed"
-import AddUsers from "../pages/Admin/AddUser";
+import AddStudent from "../pages/Admin/AddStudent";
+import AddFaculty from "../pages/Admin/AddFaculty";
 
 function PageController() {
     return (
@@ -21,8 +22,9 @@ function PageController() {
             <Route exact path="/" component={LandingPage} />
             <Route exact path="/LoginSignup" component={LoginSignup} />
             <Route exact path="/Admin" component={Admin} />
-                <Route exact path="/Admin/AddUsers" component={AddUsers} />
-            
+                <Route exact path="/Admin/AddStudent" component={AddStudent} />
+                <Route exact path="/Admin/AddFaculty" component={AddFaculty} />
+
             <Switch>
                 <ProtectedRoute exact path="/Announcements" component={Announcements} />
                 <ProtectedRoute exact path="/Feed" component={Feed} />

@@ -1,12 +1,6 @@
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
-
 function UserCard(props) {
-    var history = useHistory();
-    
-    const {onDelete} = props.onDelete;
 
     return <>
-
         <tr>
             <td>
                 {props.user.id}

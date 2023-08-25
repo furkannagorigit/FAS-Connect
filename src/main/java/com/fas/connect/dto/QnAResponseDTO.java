@@ -15,11 +15,13 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 public class QnAResponseDTO {
+	private Long id;
 	private String text;
 	private LocalDateTime createdAt = LocalDateTime.now();
 	private final PostType type = PostType.QNA;
     private String answer;
     private Long answeredById;
+    private String answeredByName;
 	private String createdByName;
     private Long createdById;
 	private List<Comment> comments = new ArrayList<Comment>();

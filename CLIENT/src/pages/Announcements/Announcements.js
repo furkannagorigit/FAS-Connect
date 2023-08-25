@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 
 function Announcements() {
 
+  const role = sessionStorage.getItem("role")
   const [isCreateAnnouncementOpen, setCreateAnnouncementOpen] = useState(false); // Add this state
 
   const [announcements, setAnnoncements] = useState([])
@@ -47,12 +48,14 @@ function Announcements() {
       </div>
 
       <div className="scrollable">
-      {announcements.map((announcement, index) => (
-  <AnnouncementsCard key={index} props={announcement} />
-))}
-        <button className="floating-button" onClick={handleButtonClick}>
-          Add Announcement
-        </button>
+        {announcements.map((announcement, index) => (
+          <AnnouncementsCard key={index} props={announcement} />
+        ))}
+        {role=="FACULTY"&&
+         <button className="floating-button" onClick={handleButtonClick}>
+         Add Announcement
+       </button> 
+        }
 
       </div>
     </div>

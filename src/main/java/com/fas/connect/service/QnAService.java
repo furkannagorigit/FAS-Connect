@@ -2,6 +2,7 @@ package com.fas.connect.service;
 
 import java.util.List;
 
+import com.fas.connect.dto.AnswerReqDTO;
 import com.fas.connect.dto.ApiResponse;
 import com.fas.connect.dto.CommentDTO;
 import com.fas.connect.dto.PostDTO;
@@ -17,4 +18,6 @@ public interface QnAService {
 	    
 	    ApiResponse commentQnA(CommentDTO commentDTO);
 		ApiResponse uncommentQnA(Long commentId);
+
+		QnAResponseDTO addAnswer(Long qnaId, AnswerReqDTO answerReqDTO);
 }

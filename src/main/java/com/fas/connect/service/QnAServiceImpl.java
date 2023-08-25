@@ -1,6 +1,7 @@
 package com.fas.connect.service;
 
 
+import com.fas.connect.dto.AnswerReqDTO;
 import com.fas.connect.dto.ApiResponse;
 import com.fas.connect.dto.CommentDTO;
 import com.fas.connect.dto.FeedDTO;
@@ -8,12 +9,14 @@ import com.fas.connect.dto.PostDTO;
 import com.fas.connect.dto.QnAResponseDTO;
 import com.fas.connect.entities.Announcement;
 import com.fas.connect.entities.Comment;
+import com.fas.connect.entities.Faculty;
 import com.fas.connect.entities.Feed;
 import com.fas.connect.entities.Post;
 import com.fas.connect.entities.QnA;
 import com.fas.connect.entities.User;
 import com.fas.connect.exception_handler.ResourceNotFoundException;
 import com.fas.connect.repository.CommentRepository;
+import com.fas.connect.repository.FacultyRepository;
 import com.fas.connect.repository.QnARepository;
 import com.fas.connect.repository.UserRepository;
 
@@ -30,21 +33,29 @@ public class QnAServiceImpl implements QnAService{
     private QnARepository qnARepo;
 	@Autowired
 	private UserRepository userRepo;
+	
+	@Autowired
+	private FacultyRepository facultyRepo;
+	
 	@Autowired
 	private CommentRepository commentRepo;
 
     @Autowired
     private ModelMapper modelMapper;
 
-
-public List<QnAResponseDTO> getAllQnAs() {
+	@Override
+    public List<QnAResponseDTO> getAllQnAs() {
     	return qnARepo.findAll().stream()
             .map(post -> {
             	QnAResponseDTO qna = modelMapper.map(post, QnAResponseDTO.class);
-            	qna.setAnsweredById(post.getAnswerBy().getUserId());
-            	qna.setCreatedByName(post.getCreatedBy().getFirstName()
-            						+ post.getCreatedBy().getLastName());
-            	qna.setCreatedById(post.getCreatedBy().getId());
+            	if (post.getAnswerBy() != null) {
+            		qna.setAnsweredByName(post.getAnswerBy().getUser().getFirstName() + " " + post.getAnswerBy().getUser().getLastName());
+            	    qna.setAnsweredById(post.getAnswerBy().getUserId());
+            	}
+            	if (post.getCreatedBy() != null) {
+            	    qna.setCreatedByName(post.getCreatedBy().getFirstName() + " " + post.getCreatedBy().getLastName());
+            	    qna.setCreatedById(post.getCreatedBy().getId());
+            	}
             	return qna;
             	})
             .collect(Collectors.toList());
@@ -107,6 +118,16 @@ public List<QnAResponseDTO> getAllQnAs() {
 
 		return new ApiResponse("Post uncommented");
 
+	}
+	
+	@Override
+	public QnAResponseDTO addAnswer(Long qnaId, AnswerReqDTO answerReqDTO) {
+		QnA qna = qnARepo.findById(qnaId).orElseThrow(()->new ResourceNotFoundException("Question not found"));
+		Faculty faculty = facultyRepo.findById(answerReqDTO.getAnsweredById())
+					.orElseThrow(()-> new ResourceNotFoundException("User not found"));
+		qna.setAnswerBy(faculty);
+		qna.setAnswer(answerReqDTO.getAnswer());
+		return modelMapper.map(qnARepo.save(qna), QnAResponseDTO.class);
 	}
 
 	}

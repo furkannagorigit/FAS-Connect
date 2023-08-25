@@ -4,18 +4,31 @@ import { log } from '../Utils/utils';
 const bearerToken = sessionStorage.getItem("jwt");
 
 
-export async function getAllFeed() {
-  const url = createUrl('/feed')
-
+export async function getFeeds(page,pageSize)  {
   try {
-    const response = await axios.get(url)
-    console.log(response.data)
-    return response.data
-  } catch (ex) {
-    console.log(ex)
-    return null
+    const response = await axios.get(
+      "http://localhost:7070/feeds",
+      {
+        params: {
+          page: page,
+          size: pageSize
+        },
+        headers: {
+          Authorization: `Bearer ${bearerToken}`
+        }
+      }
+    );
+    console.log(response)
+    return response;
+
+  } catch (error) {
+    // Handle error
+    return "null";
   }
-}
+
+};
+
+
 export async function AddFeed(userId,formData) {
   try {
     
@@ -33,6 +46,66 @@ export async function AddFeed(userId,formData) {
       }
     );
 
+    return response;
+
+  } catch (error) {
+    // Handle error
+    return "null";
+  }
+
+};
+
+export async function likeFeed(requestData)  {
+  try {
+    const response = await axios.post(
+      "http://localhost:7070/feeds/like",
+      requestData,
+      {
+        headers: {
+          Authorization: `Bearer ${bearerToken}`
+        }
+      }
+    );
+    return response;
+
+  } catch (error) {
+    // Handle error
+    return "null";
+  }
+
+};
+
+export async function unlikeFeed(requestData)  {
+  try {
+    const response = await axios.post(
+      "http://localhost:7070/feeds/dislike",
+      requestData,
+      {
+        headers: {
+          Authorization: `Bearer ${bearerToken}`
+        }
+      }
+    );
+    return response;
+
+  } catch (error) {
+    // Handle error
+    return "null";
+  }
+
+};
+
+export async function commentFeed(requestData)  {
+  try {
+    const response = await axios.post(
+      "http://localhost:7070/feeds/comment",
+      requestData,
+      {
+        headers: {
+          Authorization: `Bearer ${bearerToken}`
+        }
+      }
+    );
     return response;
 
   } catch (error) {

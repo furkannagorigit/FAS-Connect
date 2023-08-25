@@ -69,7 +69,7 @@ public class FeedServiceImpl implements FeedService{
             f.setComments(feed.getComments());
             f.setCreatedById(feed.getCreatedBy().getId());
             f.setCreatedByName(feed.getCreatedBy().getFirstName()
-            					+ feed.getCreatedBy().getLastName());
+            					+" "+ feed.getCreatedBy().getLastName());
             return f;
         });
     }
