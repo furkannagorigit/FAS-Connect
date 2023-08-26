@@ -28,4 +28,5 @@ public class StudentModuleMark {
     private Module module;
 
     private Integer marks;
+
 }

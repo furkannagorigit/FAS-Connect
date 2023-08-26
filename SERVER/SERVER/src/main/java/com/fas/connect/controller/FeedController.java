@@ -1,51 +1,109 @@
 package com.fas.connect.controller;
 
+import com.fas.connect.dto.CommentDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import com.fas.connect.dto.FeedDTO;
+import com.fas.connect.dto.FeedLikeRequest;
+import com.fas.connect.dto.FeedResponseDTO;
+import com.fas.connect.dto.PostDTO;
+import com.fas.connect.exception_handler.ResourceNotFoundException;
+import com.fas.connect.service.FeedService;
+import com.fas.connect.service.FeedServiceImpl;
+import com.fas.connect.service.ImageHandlingService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.apache.commons.io.FileUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.http.MediaType;
 
-import com.fas.connect.dto.FeedDTO;
-import com.fas.connect.dto.PostDTO;
-import com.fas.connect.service.FeedServiceImpl;
-import com.fas.connect.service.PostServiceImpl;
+import java.io.File;
+import java.util.List;
 
 @RestController
-@RequestMapping("/feed")
+@RequestMapping("/feeds")
 public class FeedController {
-	//Dependancy Injecion
 
-	//FeedService DI
 	@Autowired
-	FeedServiceImpl feedService;
-	
-	//PostService DI
+	private FeedService feedService;
+
 	@Autowired
-	PostServiceImpl postService;
+	ObjectMapper objectMapper;
+
+	@Autowired
+	ImageHandlingService imageService;
+
+//	@GetMapping
+//	public ResponseEntity<List<FeedResponseDTO>> getAllFeeds() {
+//		List<FeedResponseDTO> feedDTOs = feedService.getAllFeeds();
+//		if (feedDTOs.isEmpty()) {
+//			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+//		}
+//		return ResponseEntity.ok(feedDTOs);
+//	}
+
 	
-	//POST mapping to add a Feed record
-	@PostMapping("/addFeed/{userId}")
-	public ResponseEntity<?> addFeed(@PathVariable Long userId, @RequestBody FeedDTO feedDTO){
-		return ResponseEntity.status(HttpStatus.CREATED).body(feedService.addFeed(userId, feedDTO));
+	@GetMapping
+    public ResponseEntity<Page<FeedResponseDTO>> getAllFeeds(Pageable pageable) {
+        Page<FeedResponseDTO> feedDTOPage = feedService.getAllFeeds(pageable);
+        if (feedDTOPage.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+        return ResponseEntity.ok(feedDTOPage);
+    }
+	
+	@PostMapping("/like")
+	public ResponseEntity<?> likeFeed(@RequestBody FeedLikeRequest likeDTO) {
+		return ResponseEntity.status(HttpStatus.CREATED).body(feedService.likeFeed(likeDTO.getUserId(),likeDTO.getPostId()));
 	}
-	
-	//DELETE mapping to delete a Feed record
-	@DeleteMapping("/deleteFeed/{postId}")
-	public ResponseEntity<?> deleteFeed(@PathVariable Long postId){
-		postService.deletePost(postId);
-		return ResponseEntity.status(HttpStatus.OK).body("Feed removed successfully");
+
+	@PostMapping("/dislike")
+	public ResponseEntity<?> disLikeFeed(@RequestBody FeedLikeRequest likeDTO) {
+		return ResponseEntity.status(HttpStatus.OK).body(feedService.disLikeFeed(likeDTO.getUserId(),likeDTO.getPostId()));
 	}
-	
-	//PUT mapping to edit a Feed record
-	@PutMapping("/editFeed/{postId}")
-	public ResponseEntity<?> editFeed(@PathVariable Long postId, @RequestBody FeedDTO feedDTO){
-		return ResponseEntity.status(HttpStatus.OK).body(feedService.editFeed(postId, feedDTO));
+
+	@PostMapping("/comment")
+	public ResponseEntity<?> commentFeed(@RequestBody CommentDTO commentDTO) {
+		return ResponseEntity.status(HttpStatus.CREATED).body(feedService.commentFeed(commentDTO));
 	}
-	
+
+	@PostMapping("/uncomment/{id}")
+	public ResponseEntity<?> uncommentFeed(@PathVariable Long id) {
+		return ResponseEntity.status(HttpStatus.OK).body(feedService.uncommentFeed(id));
+	}
+
+
+//	@PostMapping("/{userId}")
+//	public ResponseEntity<?> createFeed(@RequestBody FeedDTO feedDTO,@PathVariable Long userId) {
+//		System.out.println(feedDTO.toString());
+//		return ResponseEntity.status(HttpStatus.CREATED).body(feedService.addFeed(userId,feedDTO));
+//	}
+
+	@PostMapping(value = "/upload/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<FeedDTO> handleUpload(
+			@PathVariable("id") Long userId,
+			@RequestParam("feed") String feed,
+			@RequestParam("imageFile") MultipartFile imageFile) throws JsonMappingException, JsonProcessingException
+
+	{
+		System.out.println("hiiiii");
+		System.out.println(imageFile.getOriginalFilename());
+		FeedDTO feedDTO = objectMapper.readValue(feed, FeedDTO.class);
+		feedDTO = imageService.addImageInFeed(feedDTO, imageFile);
+		return ResponseEntity.status(HttpStatus.CREATED).body(feedService.addFeed(userId, feedDTO));        
+	}
+
+	@DeleteMapping("/{id}")
+	public void deleteFeed(@PathVariable Long id) {
+		FeedResponseDTO feedDTO = feedService.getFeedbyId(id);
+
+
+	}
 }

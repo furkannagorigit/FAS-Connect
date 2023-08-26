@@ -8,6 +8,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,8 +20,6 @@ import javax.persistence.Table;
 import javax.persistence.JoinColumn;
 
 import org.springframework.format.annotation.DateTimeFormat;
-
-import com.fas.connect.custom_exceptions.ResourceNotFoundException;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,7 +34,6 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-//@ToString(exclude = {"modules", "students"})
 
 public class Course {
 
@@ -60,7 +58,7 @@ public class Course {
 	private List<Student> students = new ArrayList<>();
 
 	
-	@ManyToMany(cascade = CascadeType.PERSIST)
+	@ManyToMany(cascade = CascadeType.PERSIST,fetch = FetchType.EAGER)
 	@JoinTable(name="course_module",
 	joinColumns = @JoinColumn(name="course_id"),
 	inverseJoinColumns = @JoinColumn(name="module_id")
@@ -75,12 +73,4 @@ public class Course {
 		students.remove(s);
 		s.setCourse(null);
 	}
-	
-	public Student findStudent(Student s) {
-		Student foundStudent = students.stream()
-                .filter(obj -> obj.getUserId() == s.getUserId())
-                .findFirst().orElseThrow(()-> new ResourceNotFoundException("Student does not exist"));
-		return foundStudent;
-	}
-	
 }

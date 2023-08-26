@@ -2,20 +2,22 @@ package com.fas.connect.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.fas.connect.custom_exceptions.ResourceNotFoundException;
+import com.fas.connect.repository.CourseRepository;
+import com.fas.connect.repository.FacultyRepository;
+import com.fas.connect.repository.ModuleRepository;
+import com.fas.connect.repository.StudentModuleMarksRepository;
+import com.fas.connect.repository.StudentRepository;
+import com.fas.connect.repository.UserRepository;
 import com.fas.connect.dto.FacultyDTO;
 import com.fas.connect.dto.MarksDTO;
+import com.fas.connect.dto.SigninRequest;
 import com.fas.connect.dto.StudentDTO;
 import com.fas.connect.dto.UserDTO;
 import com.fas.connect.entities.Course;
@@ -23,128 +25,116 @@ import com.fas.connect.entities.Faculty;
 import com.fas.connect.entities.Student;
 import com.fas.connect.entities.StudentModuleMark;
 import com.fas.connect.entities.User;
-import com.fas.connect.repository.CourseRepository;
-import com.fas.connect.repository.FacultyRepository;
-import com.fas.connect.repository.ModuleRepository;
-import com.fas.connect.repository.StudentModuleMarksRepository;
-import com.fas.connect.repository.StudentRepository;
-import com.fas.connect.repository.UserRepository;
+import com.fas.connect.exception_handler.ResourceNotFoundException;
 
 @Service
 @Transactional
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService{
 
-	//Dependancy Injecion
 
-	//UserRepository DI
 	@Autowired
 	private UserRepository userRepo;
 
-	//FacultyRepository DI
-	@Autowired
-	private FacultyRepository facultyRepo;
-
-	//StudentRepository DI
-	@Autowired
-	private StudentRepository studentRepo;
-
-	//CourseRepository DI
 	@Autowired
 	private CourseRepository courseRepo;
 
-	//StudentModuleMark DI
 	@Autowired
-	private StudentModuleMarksRepository marksRepo;
+	private FacultyRepository facultyRepo;
+
+	@Autowired
+	private StudentRepository studentRepo;
 	
-	//ModuleRepository DI
 	@Autowired
 	private ModuleRepository moduleRepo;
 
-	//ModelMapperDI
 	@Autowired
-	private ModelMapper modelMapper;
+	private StudentModuleMarksRepository marksRepo;
 
-	//Service to get the list of users
+	@Autowired
+	private EmailService emailService;
+	
+	@Autowired
+	ModelMapper mapper;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
+
 	@Override
-	public List<User> getAllUsers() {
-		return userRepo.findAll();
+	public UserDTO signIn(SigninRequest request) {
+		User user = userRepo.findByEmail(request.getEmail()).orElseThrow(() -> new ResourceNotFoundException("Faculty not found"));
+        return mapper.map(user, UserDTO.class);
 	}
 
-	//	//Service to edit user details
-	//	@Override
-	//	public User editUser(Long id, UserDTO userDTO) {
-	//		User user = userRepo.findById(id)
-	//				.orElseThrow(() -> new RuntimeException("Faculty not found"));
-	//
-	//		user = modelMapper.map(userDTO, User.class);
-	//		return userRepo.save(user);
-	//	}
+	
+	//Adding the list of student according course	
+	@Override
+	public ResponseEntity<?> addStudents(List<StudentDTO> students, long courseId) {
 
-	//Service to add a faculty record
+		Course course = courseRepo.findById(courseId).orElseThrow(() -> new ResourceNotFoundException("Course not found"));
+		for (StudentDTO studentDTO : students) {
+			User u1 = studentDTO.getUser();
+			u1.getProfileImg();
+			studentDTO.getUser().setPassword(passwordEncoder.encode(studentDTO.getUser().getPassword()));
+			User user = userRepo.save(studentDTO.getUser());
+			Student student = new Student(studentDTO.getRollNo(), user);
+			
+			String to = student.getUser().getEmail();
+			String subject = "Welcome to FASConnect";
+	        String text = "Hello " + studentDTO.getUser().getFirstName() +",you have successfully registered in FASConnect.\n" +
+	        "Your User Id is " + studentDTO.getRollNo() + ".\n To SignIn use your ID and EmailID " + studentDTO.getUser().getEmail() + " Thank you!";
+	        emailService.sendEmail(to, subject, text);
+			
+			course.addStudent(student);
+		}
+		String successMessage = "Students added successfully to the course.";
+		return ResponseEntity.status(HttpStatus.CREATED).body(successMessage);	
+	}
+
+	// To get All users
+	@Override
+	public List<UserDTO> getAllUsers() {
+		List<User> list = userRepo.findAll();
+		return list.stream() 
+				.map(user-> mapper.map(user, UserDTO.class)) 
+				.collect(Collectors.toList());
+	}
+
+	//To add faculty
 	@Override
 	public FacultyDTO addFaculty(FacultyDTO facultyDTO) {
-		Faculty faculty = modelMapper.map(facultyDTO, Faculty.class);
-		return modelMapper.map(facultyRepo.save(faculty), FacultyDTO.class);
-	}
+		Faculty faculty = mapper.map(facultyDTO, Faculty.class);
+		faculty.getUser().setPassword(passwordEncoder.encode(facultyDTO.getUser().getPassword()));
+		Faculty facultyPersist = facultyRepo.save(faculty);
+		facultyPersist.setFacultyId("F00"+facultyPersist.getUserId());
+		
+		String to = faculty.getUser().getEmail();
+		String subject = "Welcome to FASConnect";
+        String text = "Hello " + faculty.getUser().getFirstName() +",you have successfully registered in FASConnect.\n" +
+        "Your User Id is F00" + facultyPersist.getUserId() + ".\n To SignIn use your ID and EmailID " + faculty.getUser().getEmail() + " Thank you!";
+        emailService.sendEmail(to, subject, text);
 
-	//Service to edit faculty details
+        return mapper.map(facultyRepo.save(facultyPersist), FacultyDTO.class);
+	}
+	
+	//To delete student
 	@Override
-	public FacultyDTO editFaculty(FacultyDTO facultyDTO) {
-		Faculty faculty = facultyRepo
-				.findByFacultyIdAndUserEmail(facultyDTO.getFacultyId(), facultyDTO.getUser().getEmail())
-				.orElseThrow(()-> new ResourceNotFoundException("Faculty not found"));
-		modelMapper.map(facultyDTO, faculty);
-		return modelMapper.map(facultyRepo.save(faculty), FacultyDTO.class);
+	public void deleteStudent(Long userId) {
+		Student student = studentRepo.findById(userId)
+				.orElseThrow();
+		Course course = student.getCourse();
+		course.removeStudent(student);
+		courseRepo.save(course);		
 	}
-
-	//Service to edit student details
-	@Override
-	public StudentDTO editStudent(StudentDTO studentDTO) {		
-		Student student = studentRepo
-						.findByRollNoAndUserEmail(studentDTO.getRollNo(), studentDTO.getUser().getEmail())
-						.orElseThrow(()-> new ResourceNotFoundException("Student not found"));
-		modelMapper.map(studentDTO, student);
-		return modelMapper.map(studentRepo.save(student), StudentDTO.class);
-	}
-
-
-	//Service to delete a faculty record
+	
+	//To delete faculty
 	@Override
 	public void deleteFaculty(Long id) {
 		Faculty faculty = facultyRepo.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Faculty not found"));
 		facultyRepo.delete(faculty);
 	}
-
-	@Override
-	public ResponseEntity<?> AddStudentsToCourse(List<StudentDTO> students, long courseId) {
-
-		Course course = courseRepo.findById(courseId).orElseThrow();
-		for (StudentDTO studentDTO : students) {
-			User user = userRepo.save(studentDTO.getUser());
-			Student student = new Student(studentDTO.getRollNo(), user);
-			course.addStudent(student);
-
-		}
-		String successMessage = "Students added successfully to the course.";
-		return ResponseEntity.status(HttpStatus.CREATED).body(successMessage);	
-	}
-
-	//Service to delete a student record
-	@Override
-	public void deleteStudent(Long userId) {
-
-		Student student = studentRepo.findById(userId)
-				.orElseThrow();
-
-		Course course = student.getCourse();
-
-		course.removeStudent(student);
-
-		courseRepo.save(course);
-	}
-
-
+	
 	@Override
 	public List<MarksDTO> getMarks(Long id) {
 		Student student = studentRepo.findById(id)
@@ -153,7 +143,7 @@ public class UserServiceImpl implements UserService {
 		List<StudentModuleMark> markSheet = student.getStudentModuleMarks();
 		
 		return markSheet.stream().map(mark -> {
-	        MarksDTO marksDTO = modelMapper.map(mark, MarksDTO.class);
+	        MarksDTO marksDTO = mapper.map(mark, MarksDTO.class);
 	        marksDTO.setStudentId(mark.getStudent().getUserId());  // Mapping studentId
 	        marksDTO.setModuleId(mark.getModule().getId());    // Mapping moduleId
 	        return marksDTO;
@@ -170,14 +160,16 @@ public class UserServiceImpl implements UserService {
 		marks.setStudent(studentRepo.findById(marksDTO.getStudentId()).
 									orElseThrow());
 		
+		
 		marks.setModule(moduleRepo.findById(marksDTO.getModuleId()).
 									orElseThrow());
 		
-		MarksDTO returnMarkDTO = modelMapper.map(marksRepo.save(marks), MarksDTO.class);
+		MarksDTO returnMarkDTO = mapper.map(marksRepo.save(marks), MarksDTO.class);
 		
 		returnMarkDTO.setStudentId(marks.getStudent().getUserId());
 		returnMarkDTO.setModuleId(marks.getModule().getId());
 		
 		return returnMarkDTO;
 	}
+
 }
