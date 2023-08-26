@@ -6,6 +6,7 @@ import { getAllMarks } from '../../Services/CourseService';
 import { toast } from 'react-toastify';
 import {Bar, PieChart} from 'react-google-charts';
 import { Chart } from "react-google-charts";
+import CourseTimeline from './CourseCalender';
 
 
 
@@ -222,8 +223,7 @@ function MyCourse() {
 
           ;
       case 'link2':
-        return
-          ;
+        return <><CourseTimeline/></>          ;
       case 'link3':
         return <div className="container col-md-12">
           <h1>Course Materials</h1>
@@ -239,10 +239,7 @@ function MyCourse() {
             ))}
           </div>
         </div>;
-      case 'link4':
-        return <div>Content for Link 4</div>;
-      default:
-        return <div>Default Content</div>;
+    
     }
   };
 
@@ -277,9 +274,7 @@ function MyCourse() {
                 <li className={activeLink === 'link3' ? 'active' : ''} onClick={() => handleLinkClick('link3')}>
                   <a href="#!">Course material</a>
                 </li>
-                <li className={activeLink === 'link4' ? 'active' : ''} onClick={() => handleLinkClick('link4')}>
-                  <a href="#!">Calender</a>
-                </li>
+              
               </ul>
             </div>
           </div>

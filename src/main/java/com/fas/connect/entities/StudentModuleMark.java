@@ -27,6 +27,8 @@ public class StudentModuleMark {
     @ManyToOne
     private Module module;
 
-    private Integer marks;
+    private Integer obtainedMarks;
+    
+    private Integer totalMarks;
 
 }

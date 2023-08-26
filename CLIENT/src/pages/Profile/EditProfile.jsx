@@ -39,8 +39,8 @@ const EditProfile = () => {
         setSelectedImage(event.target.files[0]); // Update state with selected image
     };
 
-    const id = 1;
-    const role = "STUDENT"
+    const id = sessionStorage.getItem("userId")
+    const role = sessionStorage.getItem("role")
 
     const handleImageUpload = (id, role) => {
         if (selectedImage) {

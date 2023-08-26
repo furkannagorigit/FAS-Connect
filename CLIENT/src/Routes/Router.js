@@ -11,10 +11,8 @@ import MyInstitute from "../pages/MyInstitute/MyInstitute";
 import Admin from "../pages/Admin/Admin";
 import MyProfile from "../pages/Profile/Profile";
 import EditProfile from "../pages/Profile/EditProfile";
-import CreateFeed from "../pages/Feed/CreateFeed"
-import AddStudent from "../pages/Admin/AddStudent";
-import AddFaculty from "../pages/Admin/AddFaculty";
-
+import CreateFeed from "../pages/Feed/CreateFeed";
+import FAQ from "../pages/FAQ/FAQ"
 function PageController() {
     return (
 
@@ -22,9 +20,7 @@ function PageController() {
             <Route exact path="/" component={LandingPage} />
             <Route exact path="/LoginSignup" component={LoginSignup} />
             <Route exact path="/Admin" component={Admin} />
-                <Route exact path="/Admin/AddStudent" component={AddStudent} />
-                <Route exact path="/Admin/AddFaculty" component={AddFaculty} />
-
+            
             <Switch>
                 <ProtectedRoute exact path="/Announcements" component={Announcements} />
                 <ProtectedRoute exact path="/Feed" component={Feed} />
@@ -34,6 +30,7 @@ function PageController() {
                 <ProtectedRoute exact path="/MyInstitute" component={MyInstitute} />
                 <ProtectedRoute exact path="/MyProfile" component={MyProfile}/>
                 <ProtectedRoute exact path="/EditProfile" component={EditProfile}/>
+                <ProtectedRoute exact path="/FAQ" component={FAQ}/>
             </Switch>
         </Router>
     );

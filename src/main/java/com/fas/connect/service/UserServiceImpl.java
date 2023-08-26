@@ -155,8 +155,8 @@ public class UserServiceImpl implements UserService{
 	public MarksDTO addMarks(MarksDTO marksDTO) {
 		StudentModuleMark marks = new StudentModuleMark();
 		
-		marks.setMarks(marksDTO.getMarks());
-		System.out.println(marks.getMarks());
+		marks.setObtainedMarks(marksDTO.getObtainedMarks());
+		marks.setTotalMarks(marksDTO.getTotalMarks());
 		
 		marks.setStudent(studentRepo.findById(marksDTO.getStudentId()).
 									orElseThrow());
@@ -172,5 +172,4 @@ public class UserServiceImpl implements UserService{
 		
 		return returnMarkDTO;
 	}
-
 }

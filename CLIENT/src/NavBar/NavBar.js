@@ -60,11 +60,11 @@ function Navbar() {
                                         View Profile
                                     </a>
                                 </li>
-                                {/* <li>
+                                <li>
                                     <a href="FAQ" style={{ color: '#9370db' }}>
                                         FaQ
                                     </a>
-                                </li> */}
+                                </li>
                                 
                                 <li>
                                     <a href="/" style={{ color: '#9370db' }} onClick={handleLogout}>

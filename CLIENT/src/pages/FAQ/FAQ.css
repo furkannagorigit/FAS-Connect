@@ -1,0 +1,85 @@
+/* Styling for the FAQ section */
+.faq-list {
+  margin-top: 30px;
+}
+
+.faq-item {
+  margin-bottom: 20px;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.faq-question {
+  margin: 0;
+  font-weight: bold;
+}
+
+.faq-answer {
+  margin: 10px 0 0;
+}
+
+/* Styling for the Contact section */
+.contact-section-container {
+  display: flex;
+  justify-content: space-between;
+  margin: 30px;
+}
+
+.contact-section {
+  background-color: #f9f9f9;
+  padding: 20px 0;
+}
+
+.contact-content {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.contact-content h1 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.contact-content p {
+  font-size: 16px;
+  color: #666;
+}
+
+.contact-details {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.contact-detail {
+  flex: 1;
+  max-width: 300px;
+  padding: 20px;
+  /* margin: 10px; */
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+}
+
+.contact-detail i {
+  font-size: 36px;
+  margin-bottom: 10px;
+  color: #22c0e8;
+}
+
+.contact-label {
+  font-weight: bold;
+  color: #666;
+}
+
+.contact-info a {
+  color: #22c0e8;
+  text-decoration: none;
+}
+
+.contact-info a:hover {
+  text-decoration: underline;
+}

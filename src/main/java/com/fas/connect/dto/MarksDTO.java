@@ -12,7 +12,8 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class MarksDTO {
-	private Integer marks;
+	private Integer obtainedMarks;
+	private Integer totalMarks;
 	private Long studentId;
 	private Long moduleId;
 }

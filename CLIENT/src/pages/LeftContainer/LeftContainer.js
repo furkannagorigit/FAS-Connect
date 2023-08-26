@@ -5,12 +5,40 @@ import "../LeftContainer/LeftContainer.css"
 function LeftContainer() {
   const location = useLocation();
   const [activeSection, setActiveSection] = useState("");
-
+  var profileImage = "./data/photos/" + sessionStorage.getItem("profileImg").split('/').pop().trim();
+  console.log(profileImage)
   useEffect(() => {
     const pathname = location.pathname;
     const section = pathname.substring(1); // Remove the leading '/'
     setActiveSection(section);
   }, [location]);
+
+  var sessionRole = sessionStorage.getItem("role"); // Replace with your session role logic
+  var sessionGender = sessionStorage.getItem("gender"); // Replace with your session gender logic
+  var sessionPhoto = sessionStorage.getItem("profileImg");
+
+  // if(sessionPhoto!=null)
+  //   {
+  //     console.log(sessionGender)
+  //     profileImage = "./data/photos/" + sessionStorage.getItem("profileImg").split('/').pop().trim();
+  //     return profileImage;
+  //   }
+  //   else
+
+  const getAvatarSource = () => {
+    if (sessionRole === "STUDENT" && sessionGender === "MALE") {
+      return process.env.PUBLIC_URL + "/data/Images/male-student-avatar.png";
+    } else if (sessionRole === "STUDENT" && sessionGender === "FEMALE") {
+      return process.env.PUBLIC_URL + "/data/Images/female-student-avatar.png";
+    } else if (sessionRole === "FACULTY" && sessionGender === "MALE") {
+      console.log("getA----------")
+      return process.env.PUBLIC_URL + "/data/Images/male-faculty-avatar.png";
+    } else if (sessionRole === "FACULTY" && sessionGender === "FEMALE") {
+      return process.env.PUBLIC_URL + "/data/Images/female-faculty-avatar.png";
+    } else {
+      return profileImage;
+    }
+  };
 
   return (
     <>
@@ -27,12 +55,14 @@ function LeftContainer() {
           <div class="panel text-center">
             <div class="user-heading">
               <a href="#">
-                <img src="./data/images/furkan.jpg" alt="" title="" className="img-responsive img-circle" />
+              
+
+                <img src={profileImage} alt="" title="" className="img-responsive img-circle" />
               </a>
               <br>
               </br>
-              <strong>Elias Miah</strong>
-              <p>eliasmia1988@gmail.com</p>
+              <strong>{sessionStorage.getItem("firstName")}</strong>
+              <p>{sessionStorage.getItem("email")}</p>
 
             </div>
           </div>
