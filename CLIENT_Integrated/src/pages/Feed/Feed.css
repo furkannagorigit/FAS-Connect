@@ -1,0 +1,82 @@
+/* Styles for wrapping the search box */
+
+.main {
+    width: 40%;
+}
+
+/* Bootstrap 3 text input with search icon */
+
+.has-search .form-control {
+    padding-left: 40px;
+}
+
+.has-search .form-control-feedback {
+    position: absolute;
+    z-index: 2;
+    display: block;
+    width: 40px;
+    height: 40px;
+    line-height: 30px;
+    text-align: center;
+    pointer-events: none;
+    color: #aaa;
+}
+.floating-button {
+    position: sticky;
+    bottom: 10px;
+    background-color: #007bff;
+    color: #ffffff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    /* Add any other styles as needed for your button */
+  }
+  .modal-dialog {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+
+  /*Pop up for create feed*/
+  .popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+  }
+  
+  .popup {
+    background-color: white;
+    padding: 20px 10px; /* Adjust horizontal padding to your preference */
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 10000;
+    width: 66.67%; /* Set to 2/3 of the full width */
+    position: relative; /* Needed for close button positioning */
+  }
+  
+  .popup textarea {
+    width: 100%; /* Set the width of the textarea to 100% */
+    resize: vertical;
+  }
+  
+  .close-popup-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: transparent;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+  }
+  

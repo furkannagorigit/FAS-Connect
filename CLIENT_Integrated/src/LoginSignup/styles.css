@@ -1,0 +1,69 @@
+/* LoginSignup.css */
+.centered-container {
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: #f9f9f9;
+	margin: 0;
+  }
+  
+  .login-signup-form {
+	background-color: #f0f0f0;
+	border-radius: 10px;
+	padding: 20px;
+	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+	animation: fadeIn 0.5s ease-in-out;
+	max-width: 600px;
+	width: 500%;
+  }
+  
+  .login-signup-form h2 {
+	margin-bottom: 20px;
+  }
+  
+  .login-signup-form button[type="submit"] {
+	margin-top: 20px;
+  }
+  
+.login-signup-form input[type="email"],
+.login-signup-form input[type="password"],
+.login-signup-form button[type="submit"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  transition: border-color 0.3s ease;
+}
+
+.login-signup-form input[type="email"]:focus,
+.login-signup-form input[type="password"]:focus {
+  border-color: #80bdff;
+  outline: none;
+}
+
+.login-signup-form button[type="submit"] {
+  background-color: #007bff;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login-signup-form button[type="submit"]:hover {
+  background-color: #0056b3;
+}
+
+  @keyframes fadeIn {
+	from {
+	  opacity: 0;
+	  transform: translateY(-10px);
+	}
+	to {
+	  opacity: 1;
+	  transform: translateY(0);
+	}
+  }
+  

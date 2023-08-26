@@ -1,0 +1,44 @@
+/* Reset some default styles for consistency */
+body, h1, h2, p {
+    margin: 0;
+    padding: 0;
+    font-family: 'Helvetica Neue', sans-serif;
+  }
+  
+  .infrastructure-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .intro {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+  }
+  
+  .intro img {
+    width: 30%;
+    height: auto;
+  }
+  
+  .title {
+    font-size: 36px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .facility {
+    margin-bottom: 30px;
+  }
+  
+  .facility h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  .facility p {
+    font-size: 18px;
+    line-height: 1.5;
+  }
+  

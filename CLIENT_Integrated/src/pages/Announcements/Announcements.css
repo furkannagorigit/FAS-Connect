@@ -1,0 +1,63 @@
+/* Styles for wrapping the search box */
+
+.main {
+    width: 40%;
+}
+
+/* Bootstrap 3 text input with search icon */
+
+.has-search .form-control {
+    padding-left: 40px;
+}
+
+.has-search .form-control-feedback {
+    position: absolute;
+    z-index: 2;
+    display: block;
+    width: 40px;
+    height: 40px;
+    line-height: 30px;
+    text-align: center;
+    pointer-events: none;
+    color: #aaa;
+}
+
+/* Scrollable */
+
+.scrollable {
+    max-height: 730px; /* Set the maximum height of the division */
+    overflow-y: scroll; /* Enable vertical scrolling */
+  }
+  
+  .scrollable::-webkit-scrollbar {
+    width: 5px; /* Set the width of the scrollbar */
+  }
+  
+  .scrollable::-webkit-scrollbar-thumb {
+    background-color: #888; /* Set the color of the scrollbar thumb */
+    border-radius: 4px; /* Round the edges of the scrollbar thumb */
+  }
+  
+  .scrollable::-webkit-scrollbar-track {
+    background-color: transparent; /* Set the background color of the scrollbar track */
+  }
+  
+  .scrollable::-webkit-scrollbar-thumb:hover {
+    background-color: #555; /* Set the color of the scrollbar thumb on hover */
+  }
+  
+  .scrollable::-webkit-scrollbar-thumb:vertical {
+    min-height: 10px; /* Set the minimum height of the scrollbar thumb */
+  }
+  
+  .scrollable::-webkit-scrollbar-thumb:horizontal {
+    min-width: 10px; /* Set the minimum width of the scrollbar thumb */
+  }
+  
+  .scrollable::-webkit-scrollbar-corner {
+    background-color: transparent; /* Set the background color of the scrollbar corner */
+  }
+  
+  .scrollable:not(:hover)::-webkit-scrollbar-thumb {
+    background-color: transparent; /* Hide the scrollbar thumb when not hovered */
+  }

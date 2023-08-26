@@ -1,0 +1,24 @@
+.card {
+    width: 100%;
+    margin-bottom: 20px;
+    border: 1px solid #ccc; /* Add border to the cards */
+    border-radius: 5px; /* Add rounded corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+  }
+  
+  .card-body {
+    padding: 20px;
+  }
+  
+  .card-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+  }
+  
+  .card-text {
+    font-size: 1rem;
+  }
+  
+  .btn-primary {
+    margin-top: 10px;
+  }
